@@ -1,0 +1,34 @@
+# Template App
+
+Template base para projetos PHP 8.2 com Docker, PostgreSQL, HTMX, Tailwind CSS e Codex.
+
+## Estrutura
+- `app/`: controllers, services, repositories, suporte HTTP e views.
+- `bootstrap/`: inicializacao da aplicacao.
+- `database/`: migrations e seeds de exemplo com Phinx.
+- `docker/`: configuracao do Apache, PHP e Xdebug.
+- `public/`: front controller e assets publicos.
+- `tests/`: testes de integracao.
+
+## Uso rapido
+1. Copie `.env.example` para `.env`.
+2. Ajuste `DB_DATABASE`, `DB_USERNAME` e `DB_PASSWORD` para o projeto.
+3. Garanta que a rede Docker `development` e a stack `infraestrutura-php` estejam ativas.
+4. Execute `make up`.
+5. Execute `make install`.
+6. Execute `make css-build`.
+7. Execute `make migrate`.
+8. Opcional: execute `make seed-example`.
+
+## Endpoints de exemplo
+- `GET /`: pagina inicial com verificacao de banco e componente HTMX.
+- `GET /status`: fragmento HTML para demonstrar atualizacao parcial via HTMX.
+
+## Comandos principais
+- `make up`
+- `make down`
+- `make shell`
+- `make migrate`
+- `make seed-example`
+- `make bootstrap-example`
+- `make validate`

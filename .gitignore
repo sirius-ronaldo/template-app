@@ -1,0 +1,10 @@
+.env
+/vendor/
+/node_modules/
+/public/assets/css/app.css
+/.phpunit.cache/
+/.phpstan.cache/
+/.idea/
+/.vscode/
+*.log
+.DS_Store
