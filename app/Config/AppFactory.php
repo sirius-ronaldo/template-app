@@ -10,15 +10,24 @@ use App\Repository\DatabaseDiagnosticsRepository;
 use App\Service\HomeService;
 use App\Support\Container;
 use App\Support\Csrf;
+use App\Support\FileLogger;
 use App\Support\Session;
 use App\Support\View;
 use PDO;
+use Psr\Log\LoggerInterface;
 
 final class AppFactory
 {
-    public static function build(): Container
+    public static function build(?AppConfig $config = null): Container
     {
+        $config ??= AppConfig::fromEnvironment($_ENV, dirname(__DIR__, 2));
         $container = new Container();
+
+        $container->singleton(AppConfig::class, static fn (): AppConfig => $config);
+        $container->singleton(
+            LoggerInterface::class,
+            static fn (Container $c): FileLogger => new FileLogger($c->get(AppConfig::class)->logPath)
+        );
 
         $container->singleton(Session::class, static fn (): Session => new Session());
         $container->singleton(
@@ -33,22 +42,22 @@ final class AppFactory
                 $c->get(Csrf::class)
             )
         );
-        $container->singleton(PDO::class, static function (): PDO {
+        $container->singleton(PDO::class, static function () use ($config): PDO {
             $dsn = sprintf(
                 'pgsql:host=%s;port=%s;dbname=%s',
-                $_ENV['DB_HOST'] ?? 'dev-postgres',
-                $_ENV['DB_PORT'] ?? '5432',
-                $_ENV['DB_DATABASE'] ?? 'template_app'
+                $config->dbHost,
+                $config->dbPort,
+                $config->dbName
             );
 
-            $pdo = new PDO($dsn, $_ENV['DB_USERNAME'] ?? '', $_ENV['DB_PASSWORD'] ?? '', [
+            $pdo = new PDO($dsn, $config->dbUser, $config->dbPassword, [
                 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
                 PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
                 PDO::ATTR_EMULATE_PREPARES => false,
             ]);
 
-            if (!empty($_ENV['DB_SCHEMA'])) {
-                $schema = str_replace('"', '""', (string) $_ENV['DB_SCHEMA']);
+            if ($config->dbSchema !== '') {
+                $schema = str_replace('"', '""', $config->dbSchema);
                 $pdo->exec(sprintf('SET search_path TO "%s"', $schema));
             }
 

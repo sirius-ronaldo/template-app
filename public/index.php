@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Exception\AuthorizationException;
+use App\Config\AppConfig;
 use App\Exception\NotFoundException;
 use App\Support\Container;
 use App\Support\Request;
@@ -10,18 +11,22 @@ use App\Support\Response;
 use App\Support\Router;
 use App\Support\View;
 use FastRoute\Dispatcher;
+use Psr\Log\LoggerInterface;
 
 require dirname(__DIR__) . '/bootstrap/app.php';
 
 /** @var Container $container */
 /** @var Request $request */
+/** @var AppConfig $config */
 $routerFactory = require dirname(__DIR__) . '/routes/web.php';
 /** @var Router $router */
 $router = $routerFactory($container);
 
-set_exception_handler(static function (Throwable $exception) use ($container): void {
-    $debug = filter_var($_ENV['APP_DEBUG'] ?? false, FILTER_VALIDATE_BOOL);
-    error_log($exception->__toString());
+set_exception_handler(static function (Throwable $exception) use ($container, $config): void {
+    $debug = $config->debug;
+    $container->get(LoggerInterface::class)->error('Erro nao tratado na aplicacao.', [
+        'exception' => $exception::class,
+    ]);
 
     $view = $container->get(View::class);
     $status = 500;
