@@ -6,6 +6,7 @@ declare(strict_types=1);
 /** @var string|null $flashSuccess */
 /** @var string|null $flashError */
 /** @var array<string, mixed>|null $auth */
+/** @var bool $isAdmin */
 /** @var App\Support\Csrf $csrf */
 /** @var App\Support\View $this */
 ?>
@@ -29,6 +30,12 @@ declare(strict_types=1);
                 </p>
                 <?php if (is_array($auth)) : ?>
                     <a class="mr-3 text-sm font-medium text-emerald-700" href="/minha-senha">Minha senha</a>
+                    <?php if ($isAdmin === true) : ?>
+                        <a
+                            class="mr-3 text-sm font-medium text-emerald-700"
+                            href="/configuracoes/seguranca"
+                        >Segurança</a>
+                    <?php endif; ?>
                     <form class="mt-4" method="post" action="/logout">
                         <input type="hidden" name="_csrf" value="<?= $this->e($csrf->token()) ?>">
                         <button

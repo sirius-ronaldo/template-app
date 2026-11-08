@@ -85,3 +85,21 @@ Implementações:
 - Respostas 403, 404 e 405, incluindo header `Allow` quando aplicável.
 - Testes automatizados unitários e de integração contra PostgreSQL real.
 - Roteiro caixa-preta em `docs/tests/blackbox/sprint-04.md`.
+
+## 2026-11-08 — Sprint 05 — Infraestrutura comum da UI administrativa
+
+Status: concluída tecnicamente; homologação caixa-preta pendente.
+
+Implementações:
+
+- `ViewRenderer` em PHP puro com layout opcional.
+- `FlashBag` reutilizável para mensagens de sessão.
+- Componente de paginação com padrão 25 e limite máximo 100.
+- Componentes de flash, erro de campo, confirmação e paginação.
+- Layout administrativo em `resources/views/layouts/app.php`.
+- Partial HTMX para tabela, filtro, preservação de query string e `hx-push-url`.
+- Tela administrativa piloto `Configurações > Segurança` protegida por ADMIN.
+- Menu com `Minha senha` para autenticados e `Segurança` somente para ADMIN.
+- Compatibilidade da infraestrutura com respostas full e HTMX.
+- Testes automatizados de renderer, flash, paginação e visibilidade do menu.
+- Roteiro caixa-preta em `docs/tests/blackbox/sprint-05.md`.

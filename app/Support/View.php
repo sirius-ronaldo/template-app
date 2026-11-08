@@ -4,12 +4,15 @@ declare(strict_types=1);
 
 namespace App\Support;
 
+use App\Service\AdminChecker;
+
 final class View
 {
     public function __construct(
         private readonly string $basePath,
         private readonly Session $session,
-        private readonly ?Csrf $defaultCsrf = null
+        private readonly ?Csrf $defaultCsrf = null,
+        private readonly ?AdminChecker $admins = null
     ) {
     }
 
@@ -26,6 +29,9 @@ final class View
 
         $csrf = $data['csrf'] ?? $this->defaultCsrf;
         $auth = $this->session->get('auth');
+        $isAdmin = is_array($auth)
+            && isset($auth['user_id'])
+            && $this->admins?->isAdmin((int) $auth['user_id']) === true;
         $flashSuccess = $this->session->consumeFlash('success');
         $flashError = $this->session->consumeFlash('error');
 

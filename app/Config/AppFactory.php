@@ -7,6 +7,7 @@ namespace App\Config;
 use App\Controller\LoginController;
 use App\Controller\LogoutController;
 use App\Controller\PasswordController;
+use App\Controller\AdminPilotController;
 use App\Controller\HomeController;
 use App\Controller\StatusController;
 use App\Middleware\AuthenticationMiddleware;
@@ -26,10 +27,12 @@ use App\Support\Container;
 use App\Support\Csrf;
 use App\Support\CsrfTokenManager;
 use App\Support\FileLogger;
+use App\Support\FlashBag;
 use App\Support\PasswordHasher;
 use App\Support\Session;
 use App\Support\SessionManager;
 use App\Support\View;
+use App\Support\ViewRenderer;
 use PDO;
 use Psr\Log\LoggerInterface;
 
@@ -47,6 +50,17 @@ final class AppFactory
         );
 
         $container->singleton(Session::class, static fn (): Session => new Session());
+        $container->singleton(
+            FlashBag::class,
+            static fn (Container $c): FlashBag => new FlashBag($c->get(Session::class))
+        );
+        $container->singleton(
+            ViewRenderer::class,
+            static fn (Container $c): ViewRenderer => new ViewRenderer(
+                dirname(__DIR__, 2) . '/resources/views',
+                $c->get(FlashBag::class)
+            )
+        );
         $container->singleton(SessionManager::class, static fn (Container $c): SessionManager => new SessionManager(
             $c->get(Session::class)
         ));
@@ -64,7 +78,8 @@ final class AppFactory
             static fn (Container $c): View => new View(
                 dirname(__DIR__) . '/View',
                 $c->get(Session::class),
-                $c->get(Csrf::class)
+                $c->get(Csrf::class),
+                $c->get(AdminChecker::class)
             )
         );
         $container->singleton(PDO::class, static function () use ($config): PDO {
@@ -150,6 +165,10 @@ final class AppFactory
                 $c->get(PasswordChangeService::class),
                 $c->get(SessionManager::class)
             )
+        );
+        $container->singleton(
+            AdminPilotController::class,
+            static fn (Container $c): AdminPilotController => new AdminPilotController($c->get(ViewRenderer::class))
         );
         $container->singleton(
             AuthenticationMiddleware::class,
