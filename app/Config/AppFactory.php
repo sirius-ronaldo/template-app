@@ -12,6 +12,7 @@ use App\Controller\UserController;
 use App\Controller\GroupController;
 use App\Controller\PermissionController;
 use App\Controller\ApplicationTypeController;
+use App\Controller\ApplicationController;
 use App\Controller\HomeController;
 use App\Controller\StatusController;
 use App\Middleware\AuthenticationMiddleware;
@@ -29,6 +30,8 @@ use App\Repository\PermissionRepository;
 use App\Repository\PermissionRepositoryInterface;
 use App\Repository\ApplicationTypeRepository;
 use App\Repository\ApplicationTypeRepositoryInterface;
+use App\Repository\ApplicationRepository;
+use App\Repository\ApplicationRepositoryInterface;
 use App\Repository\AuthorizationRepository;
 use App\Service\AuthenticationService;
 use App\Service\AdminChecker;
@@ -52,6 +55,7 @@ use App\Service\UserManagementService;
 use App\Service\GroupManagementService;
 use App\Service\PermissionManagementService;
 use App\Service\ApplicationTypeManagementService;
+use App\Service\ApplicationManagementService;
 use PDO;
 use Psr\Log\LoggerInterface;
 
@@ -180,6 +184,14 @@ final class AppFactory
             static fn (Container $c): ApplicationTypeRepositoryInterface => $c->get(ApplicationTypeRepository::class)
         );
         $container->singleton(
+            ApplicationRepository::class,
+            static fn (Container $c): ApplicationRepository => new ApplicationRepository($c->get(PDO::class))
+        );
+        $container->singleton(
+            ApplicationRepositoryInterface::class,
+            static fn (Container $c): ApplicationRepositoryInterface => $c->get(ApplicationRepository::class)
+        );
+        $container->singleton(
             PermissionManagementService::class,
             static fn (Container $c): PermissionManagementService => new PermissionManagementService(
                 $c->get(PermissionRepositoryInterface::class),
@@ -189,6 +201,14 @@ final class AppFactory
         $container->singleton(
             ApplicationTypeManagementService::class,
             static fn (Container $c): ApplicationTypeManagementService => new ApplicationTypeManagementService(
+                $c->get(ApplicationTypeRepositoryInterface::class),
+                $c->get(CatalogValidator::class)
+            )
+        );
+        $container->singleton(
+            ApplicationManagementService::class,
+            static fn (Container $c): ApplicationManagementService => new ApplicationManagementService(
+                $c->get(ApplicationRepositoryInterface::class),
                 $c->get(ApplicationTypeRepositoryInterface::class),
                 $c->get(CatalogValidator::class)
             )
@@ -287,6 +307,14 @@ final class AppFactory
                 $c->get(ViewRenderer::class),
                 $c->get(ApplicationTypeManagementService::class),
                 $c->get(PermissionManagementService::class),
+                $c->get(FlashBag::class)
+            )
+        );
+        $container->singleton(
+            ApplicationController::class,
+            static fn (Container $c): ApplicationController => new ApplicationController(
+                $c->get(ViewRenderer::class),
+                $c->get(ApplicationManagementService::class),
                 $c->get(FlashBag::class)
             )
         );

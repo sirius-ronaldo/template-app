@@ -157,3 +157,19 @@ Implementações:
 - Rotas e navegação administrativa para os novos catálogos.
 - Testes unitários e de integração PostgreSQL para CRUD, duplicidade, status, relações, rollback e impacto na autorização.
 - Roteiro caixa-preta em `docs/tests/blackbox/sprint-08.md`.
+
+## 2026-11-08 — Sprint 09 — Aplicações
+
+Status: em implementação técnica; homologação caixa-preta pendente.
+
+Implementações:
+
+- CRUD administrativo de aplicações com código, nome, descrição, tipo e status ativo.
+- Validação de código obrigatório, normalização e unicidade.
+- Seleção de tipo obrigatória, oferecendo somente tipos ativos para novas aplicações.
+- Alteração de tipo com preservação de aplicações vinculadas a tipos inativos.
+- Exibição do estado cadastral e do estado efetivo, calculado por aplicação ativa e tipo ativo.
+- Exclusão condicionada à integridade referencial, com orientação para inativação quando houver grants.
+- Impacto imediato da inativação, alteração de tipo e inativação do tipo no `Authorizer`.
+- Rotas, navegação administrativa, views full/HTMX e mensagens operacionais.
+- Roteiro caixa-preta em `docs/tests/blackbox/sprint-09.md`.

@@ -11,6 +11,7 @@ use App\Controller\UserController;
 use App\Controller\GroupController;
 use App\Controller\PermissionController;
 use App\Controller\ApplicationTypeController;
+use App\Controller\ApplicationController;
 use App\Controller\StatusController;
 use App\Support\Container;
 use App\Support\Request;
@@ -157,6 +158,13 @@ return static function (Container $container): Router {
     $router->add('POST', '/configuracoes/tipos/{id:\\d+}/excluir', static fn (Request $request, int $id): Response => $container->get(ApplicationTypeController::class)->delete($request, $id), metadata: ['admin' => true]);
     $router->add('GET', '/configuracoes/tipos/{id:\\d+}/permissoes', static fn (Request $request, int $id): Response => $container->get(ApplicationTypeController::class)->relationForm($request, $id), metadata: ['admin' => true]);
     $router->add('POST', '/configuracoes/tipos/{id:\\d+}/permissoes', static fn (Request $request, int $id): Response => $container->get(ApplicationTypeController::class)->syncRelation($request, $id), metadata: ['admin' => true]);
+    $router->add('GET', '/configuracoes/aplicacoes', static fn (Request $request): Response => $container->get(ApplicationController::class)->index($request), metadata: ['admin' => true]);
+    $router->add('GET', '/configuracoes/aplicacoes/novo', static fn (Request $request): Response => $container->get(ApplicationController::class)->form($request), metadata: ['admin' => true]);
+    $router->add('POST', '/configuracoes/aplicacoes', static fn (Request $request): Response => $container->get(ApplicationController::class)->save($request), metadata: ['admin' => true]);
+    $router->add('GET', '/configuracoes/aplicacoes/{id:\\d+}/editar', static fn (Request $request, int $id): Response => $container->get(ApplicationController::class)->form($request, $id), metadata: ['admin' => true]);
+    $router->add('POST', '/configuracoes/aplicacoes/{id:\\d+}', static fn (Request $request, int $id): Response => $container->get(ApplicationController::class)->save($request, $id), metadata: ['admin' => true]);
+    $router->add('POST', '/configuracoes/aplicacoes/{id:\\d+}/status', static fn (Request $request, int $id): Response => $container->get(ApplicationController::class)->toggle($request, $id), metadata: ['admin' => true]);
+    $router->add('POST', '/configuracoes/aplicacoes/{id:\\d+}/excluir', static fn (Request $request, int $id): Response => $container->get(ApplicationController::class)->delete($request, $id), metadata: ['admin' => true]);
     $router->add('GET', '/status', static fn (Request $request): Response => $container->get(StatusController::class)->show());
 
     return $router;
