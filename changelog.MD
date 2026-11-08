@@ -188,3 +188,18 @@ Implementações:
 - Tratamento especial do grupo ADMIN com acesso irrestrito e matriz não editável.
 - Preservação dos grants cumulativos entre grupos.
 - Roteiro caixa-preta em `docs/tests/blackbox/sprint-10.md`.
+
+## 2026-11-08 — Sprint 11 — Manifesto YAML e Atualizar Aplicações
+
+Status: em implementação técnica; homologação caixa-preta pendente.
+
+Implementações:
+
+- Manifesto estrutural em `config/security/manifest.yaml` usando `symfony/yaml`.
+- Parser, DTOs e validações de versão, seções, campos, booleanos, códigos duplicados e referências.
+- Prévia com diff de permissões, tipos, aplicações e relações tipo × permissão.
+- Diagnóstico de registros existentes ausentes do manifesto sem exclusão ou inativação automática.
+- Fluxo administrativo Validar, Prévia e Aplicar.
+- Sincronização em uma única transação, na ordem permissões, tipos, aplicações e relações.
+- Registro técnico da sincronização com administrador, versão, contagens e resultado, sem segredos.
+- Roteiro caixa-preta em `docs/tests/blackbox/sprint-11.md`.

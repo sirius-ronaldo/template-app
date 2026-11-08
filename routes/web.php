@@ -13,6 +13,7 @@ use App\Controller\PermissionController;
 use App\Controller\ApplicationTypeController;
 use App\Controller\ApplicationController;
 use App\Controller\GrantController;
+use App\Controller\ManifestController;
 use App\Controller\StatusController;
 use App\Support\Container;
 use App\Support\Request;
@@ -178,6 +179,10 @@ return static function (Container $container): Router {
     $router->add('POST', '/configuracoes/aplicacoes/{id:\\d+}', static fn (Request $request, int $id): Response => $container->get(ApplicationController::class)->save($request, $id), metadata: ['admin' => true]);
     $router->add('POST', '/configuracoes/aplicacoes/{id:\\d+}/status', static fn (Request $request, int $id): Response => $container->get(ApplicationController::class)->toggle($request, $id), metadata: ['admin' => true]);
     $router->add('POST', '/configuracoes/aplicacoes/{id:\\d+}/excluir', static fn (Request $request, int $id): Response => $container->get(ApplicationController::class)->delete($request, $id), metadata: ['admin' => true]);
+    $router->add('GET', '/security/manifest', static fn (Request $request): Response => $container->get(ManifestController::class)->show($request), metadata: ['admin' => true]);
+    $router->add('POST', '/security/manifest/validate', static fn (Request $request): Response => $container->get(ManifestController::class)->validate($request), metadata: ['admin' => true]);
+    $router->add('POST', '/security/manifest/preview', static fn (Request $request): Response => $container->get(ManifestController::class)->preview($request), metadata: ['admin' => true]);
+    $router->add('POST', '/security/manifest/apply', static fn (Request $request): Response => $container->get(ManifestController::class)->apply($request), metadata: ['admin' => true]);
     $router->add('GET', '/status', static fn (Request $request): Response => $container->get(StatusController::class)->show());
 
     return $router;

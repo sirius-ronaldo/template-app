@@ -25,6 +25,7 @@ declare(strict_types=1);
                 <a href="/minha-senha">Minha senha</a>
                 <a href="/configuracoes/seguranca">Segurança</a>
                 <a href="/configuracoes/aplicacoes">Aplicações</a>
+                <a href="/security/manifest">Manifesto</a>
             </nav>
         </div>
     </header>

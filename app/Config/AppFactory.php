@@ -14,6 +14,7 @@ use App\Controller\PermissionController;
 use App\Controller\ApplicationTypeController;
 use App\Controller\ApplicationController;
 use App\Controller\GrantController;
+use App\Controller\ManifestController;
 use App\Controller\HomeController;
 use App\Controller\StatusController;
 use App\Middleware\AuthenticationMiddleware;
@@ -35,6 +36,7 @@ use App\Repository\ApplicationRepository;
 use App\Repository\ApplicationRepositoryInterface;
 use App\Repository\GrantRepository;
 use App\Repository\GrantRepositoryInterface;
+use App\Repository\ManifestRepository;
 use App\Repository\AuthorizationRepository;
 use App\Service\AuthenticationService;
 use App\Service\AdminChecker;
@@ -60,6 +62,8 @@ use App\Service\PermissionManagementService;
 use App\Service\ApplicationTypeManagementService;
 use App\Service\ApplicationManagementService;
 use App\Service\GrantManagementService;
+use App\Service\ManifestService;
+use App\Manifest\ManifestParser;
 use PDO;
 use Psr\Log\LoggerInterface;
 
@@ -204,6 +208,10 @@ final class AppFactory
             static fn (Container $c): GrantRepositoryInterface => $c->get(GrantRepository::class)
         );
         $container->singleton(
+            ManifestRepository::class,
+            static fn (Container $c): ManifestRepository => new ManifestRepository($c->get(PDO::class))
+        );
+        $container->singleton(
             PermissionManagementService::class,
             static fn (Container $c): PermissionManagementService => new PermissionManagementService(
                 $c->get(PermissionRepositoryInterface::class),
@@ -229,6 +237,20 @@ final class AppFactory
             GrantManagementService::class,
             static fn (Container $c): GrantManagementService => new GrantManagementService(
                 $c->get(GrantRepositoryInterface::class)
+            )
+        );
+        $container->singleton(
+            ManifestParser::class,
+            static fn (): ManifestParser => new ManifestParser(
+                dirname(__DIR__, 2) . '/config/security/manifest.yaml'
+            )
+        );
+        $container->singleton(
+            ManifestService::class,
+            static fn (Container $c): ManifestService => new ManifestService(
+                $c->get(ManifestParser::class),
+                $c->get(ManifestRepository::class),
+                $c->get(LoggerInterface::class)
             )
         );
         $container->singleton(
@@ -343,6 +365,14 @@ final class AppFactory
                 $c->get(GrantManagementService::class),
                 $c->get(GroupManagementService::class),
                 $c->get(FlashBag::class)
+            )
+        );
+        $container->singleton(
+            ManifestController::class,
+            static fn (Container $c): ManifestController => new ManifestController(
+                $c->get(ViewRenderer::class),
+                $c->get(ManifestService::class),
+                $c->get(SessionManager::class)
             )
         );
         $container->singleton(
