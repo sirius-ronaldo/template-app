@@ -6,6 +6,9 @@
     cacheDirectory=".phpunit.cache"
     colors="true"
 >
+    <php>
+        <env name="APP_ENV" value="testing" force="true" />
+    </php>
     <testsuites>
         <testsuite name="Unit">
             <directory>tests/Unit</directory>

@@ -25,6 +25,16 @@ return [
             'port' => (int) ($_ENV['DB_PORT'] ?? 5432),
             'charset' => 'utf8',
         ],
+        'testing' => [
+            'adapter' => 'pgsql',
+            'host' => $_ENV['DB_HOST'] ?? 'dev-postgres',
+            'name' => $_ENV['DB_DATABASE_TEST'] ?? '',
+            'user' => $_ENV['DB_USERNAME_TEST'] ?? '',
+            'pass' => $_ENV['DB_PASSWORD_TEST'] ?? '',
+            'port' => (int) ($_ENV['DB_PORT'] ?? 5432),
+            'schema' => $_ENV['DB_SCHEMA_TEST'] ?? 'template_app_test_schema',
+            'charset' => 'utf8',
+        ],
     ],
     'version_order' => 'creation',
 ];

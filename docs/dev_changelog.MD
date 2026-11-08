@@ -9,4 +9,5 @@ Sprint 07 ok
 Sprint 08 ok
 Sprint 09 ok
 Sprint 10 ok
-Sprint 11
+Sprint 11 ok
+Sprint 12

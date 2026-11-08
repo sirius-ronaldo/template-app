@@ -29,6 +29,22 @@ O Template App fornece uma estrutura inicial pronta para desenvolvimento, conten
 8. Opcionalmente, execute `make seed-example`.
 9. Execute `make validate`.
 
+### Testes de integração
+
+Os testes usam PostgreSQL real em um banco separado do desenvolvimento. Configure no
+`.env` as variáveis `DB_DATABASE_TEST`, `DB_USERNAME_TEST`, `DB_PASSWORD_TEST` e
+`DB_SCHEMA_TEST`. O PHPUnit força `APP_ENV=testing`; se esse ambiente não estiver ativo,
+os testes de integração são interrompidos para evitar acesso acidental ao banco principal.
+
+Na primeira execução, a suíte cria o schema de teste e executa as migrations Phinx no
+ambiente `testing`. As execuções seguintes limpam somente o schema de teste.
+
+```bash
+make validate
+```
+
+Não é necessário executar SQL manualmente para preparar a estrutura de testes.
+
 ## Arquitetura
 
 O projeto utiliza uma arquitetura em camadas simples.

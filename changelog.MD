@@ -203,3 +203,16 @@ Implementações:
 - Sincronização em uma única transação, na ordem permissões, tipos, aplicações e relações.
 - Registro técnico da sincronização com administrador, versão, contagens e resultado, sem segredos.
 - Roteiro caixa-preta em `docs/tests/blackbox/sprint-11.md`.
+
+## 2026-11-08 — Sprint 12 — Consolidação, regressão e instalação limpa
+
+Status: em implementação técnica; homologação caixa-preta pendente.
+
+Implementações:
+
+- PHPUnit configurado para forçar `APP_ENV=testing`.
+- Testes de integração protegidos contra uso acidental do banco principal.
+- Banco e schema de teste separados, com migrations Phinx executadas automaticamente na preparação.
+- Limpeza isolada do schema de teste entre casos, sem intervenção SQL manual do desenvolvedor.
+- Revisão da documentação de instalação e configuração das credenciais de teste.
+- Roteiro caixa-preta fim a fim em `docs/tests/blackbox/sprint-12.md`.
