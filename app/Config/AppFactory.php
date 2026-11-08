@@ -9,6 +9,7 @@ use App\Controller\LogoutController;
 use App\Controller\PasswordController;
 use App\Controller\AdminPilotController;
 use App\Controller\UserController;
+use App\Controller\GroupController;
 use App\Controller\HomeController;
 use App\Controller\StatusController;
 use App\Middleware\AuthenticationMiddleware;
@@ -20,6 +21,8 @@ use App\Repository\UserCredentialRepository;
 use App\Repository\UserCredentialRepositoryInterface;
 use App\Repository\UserRepository;
 use App\Repository\UserRepositoryInterface;
+use App\Repository\GroupRepository;
+use App\Repository\GroupRepositoryInterface;
 use App\Repository\AuthorizationRepository;
 use App\Service\AuthenticationService;
 use App\Service\AdminChecker;
@@ -37,7 +40,9 @@ use App\Support\SessionManager;
 use App\Support\View;
 use App\Support\ViewRenderer;
 use App\Validator\UserValidator;
+use App\Validator\GroupValidator;
 use App\Service\UserManagementService;
+use App\Service\GroupManagementService;
 use PDO;
 use Psr\Log\LoggerInterface;
 
@@ -132,6 +137,22 @@ final class AppFactory
             static fn (Container $c): UserRepositoryInterface => $c->get(UserRepository::class)
         );
         $container->singleton(UserValidator::class, static fn (): UserValidator => new UserValidator());
+        $container->singleton(GroupValidator::class, static fn (): GroupValidator => new GroupValidator());
+        $container->singleton(
+            GroupRepository::class,
+            static fn (Container $c): GroupRepository => new GroupRepository($c->get(PDO::class))
+        );
+        $container->singleton(
+            GroupRepositoryInterface::class,
+            static fn (Container $c): GroupRepositoryInterface => $c->get(GroupRepository::class)
+        );
+        $container->singleton(
+            GroupManagementService::class,
+            static fn (Container $c): GroupManagementService => new GroupManagementService(
+                $c->get(GroupRepositoryInterface::class),
+                $c->get(GroupValidator::class)
+            )
+        );
         $container->singleton(
             UserManagementService::class,
             static fn (Container $c): UserManagementService => new UserManagementService(
@@ -200,6 +221,15 @@ final class AppFactory
                 $c->get(ViewRenderer::class),
                 $c->get(UserManagementService::class),
                 $c->get(SessionManager::class),
+                $c->get(FlashBag::class)
+            )
+        );
+        $container->singleton(
+            GroupController::class,
+            static fn (Container $c): GroupController => new GroupController(
+                $c->get(ViewRenderer::class),
+                $c->get(GroupManagementService::class),
+                $c->get(UserManagementService::class),
                 $c->get(FlashBag::class)
             )
         );

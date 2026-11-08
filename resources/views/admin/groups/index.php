@@ -1,0 +1,25 @@
+<?php
+
+declare(strict_types=1);
+
+/** @var string $filter */
+/** @var App\Support\Pagination $pagination */
+/** @var array<string,mixed> $query */
+/** @var App\Support\ViewRenderer $this */
+ob_start();
+?>
+<section class="rounded-3xl bg-white p-8 shadow-sm">
+    <div class="flex items-center justify-between gap-4">
+        <div><h1 class="text-2xl font-bold">Grupos</h1><p class="mt-2 text-sm text-slate-600">Administre grupos e seus estados.</p></div>
+        <a class="rounded-xl bg-slate-900 px-4 py-2 text-sm font-medium text-white" href="/configuracoes/grupos/novo">Novo grupo</a>
+    </div>
+    <form class="mt-6" method="get" action="/configuracoes/grupos" hx-get="/configuracoes/grupos" hx-target="#groups-table" hx-push-url="true">
+        <label class="text-sm font-medium" for="filter">Filtro</label>
+        <input class="mt-2 rounded-xl border border-slate-300 px-4 py-2" id="filter" name="filter" value="<?= $this->e($filter) ?>">
+        <button class="ml-2 rounded-xl bg-slate-900 px-4 py-2 text-sm font-medium text-white" type="submit">Filtrar</button>
+    </form>
+    <div id="groups-table" class="mt-6"><?php require __DIR__ . '/_table.php'; ?></div>
+</section>
+<?php
+$content = (string) ob_get_clean();
+echo $content;

@@ -17,7 +17,7 @@ declare(strict_types=1);
                 <td class="px-4 py-3"><?= $this->e($user['name']) ?></td>
                 <td class="px-4 py-3"><?= $this->e($user['email']) ?></td>
                 <td class="px-4 py-3"><?= (bool) $user['active'] ? 'Ativo' : 'Inativo' ?></td>
-                <td class="px-4 py-3"><a class="mr-3 text-emerald-700" href="/configuracoes/usuarios/<?= (int) $user['id'] ?>/editar">Editar</a><a class="text-emerald-700" href="/configuracoes/usuarios/<?= (int) $user['id'] ?>/senha">Resetar senha</a></td>
+                <td class="px-4 py-3"><a class="mr-3 text-emerald-700" href="/configuracoes/usuarios/<?= (int) $user['id'] ?>/editar">Editar</a><a class="mr-3 text-emerald-700" href="/configuracoes/usuarios/<?= (int) $user['id'] ?>/senha">Resetar senha</a><a class="text-emerald-700" href="/configuracoes/usuarios/<?= (int) $user['id'] ?>/grupos">Grupos</a></td>
             </tr>
         <?php endforeach; ?>
         </tbody>

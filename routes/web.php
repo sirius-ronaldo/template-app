@@ -8,6 +8,7 @@ use App\Controller\LogoutController;
 use App\Controller\PasswordController;
 use App\Controller\AdminPilotController;
 use App\Controller\UserController;
+use App\Controller\GroupController;
 use App\Controller\StatusController;
 use App\Support\Container;
 use App\Support\Request;
@@ -82,6 +83,60 @@ return static function (Container $container): Router {
         'POST',
         '/configuracoes/usuarios/{id:\\d+}/excluir',
         static fn (Request $request, int $id): Response => $container->get(UserController::class)->delete($request, $id),
+        metadata: ['admin' => true]
+    );
+    $router->add(
+        'GET',
+        '/configuracoes/grupos',
+        static fn (Request $request): Response => $container->get(GroupController::class)->index($request),
+        metadata: ['admin' => true]
+    );
+    $router->add(
+        'GET',
+        '/configuracoes/grupos/novo',
+        static fn (Request $request): Response => $container->get(GroupController::class)->createForm($request),
+        metadata: ['admin' => true]
+    );
+    $router->add(
+        'POST',
+        '/configuracoes/grupos',
+        static fn (Request $request): Response => $container->get(GroupController::class)->create($request),
+        metadata: ['admin' => true]
+    );
+    $router->add(
+        'GET',
+        '/configuracoes/grupos/{id:\\d+}/editar',
+        static fn (Request $request, int $id): Response => $container->get(GroupController::class)->editForm($request, $id),
+        metadata: ['admin' => true]
+    );
+    $router->add(
+        'POST',
+        '/configuracoes/grupos/{id:\\d+}',
+        static fn (Request $request, int $id): Response => $container->get(GroupController::class)->update($request, $id),
+        metadata: ['admin' => true]
+    );
+    $router->add(
+        'POST',
+        '/configuracoes/grupos/{id:\\d+}/status',
+        static fn (Request $request, int $id): Response => $container->get(GroupController::class)->toggle($request, $id),
+        metadata: ['admin' => true]
+    );
+    $router->add(
+        'POST',
+        '/configuracoes/grupos/{id:\\d+}/excluir',
+        static fn (Request $request, int $id): Response => $container->get(GroupController::class)->delete($request, $id),
+        metadata: ['admin' => true]
+    );
+    $router->add(
+        'GET',
+        '/configuracoes/usuarios/{id:\\d+}/grupos',
+        static fn (Request $request, int $id): Response => $container->get(GroupController::class)->userGroupsForm($request, $id),
+        metadata: ['admin' => true]
+    );
+    $router->add(
+        'POST',
+        '/configuracoes/usuarios/{id:\\d+}/grupos',
+        static fn (Request $request, int $id): Response => $container->get(GroupController::class)->syncUserGroups($request, $id),
         metadata: ['admin' => true]
     );
     $router->add('GET', '/status', static fn (Request $request): Response => $container->get(StatusController::class)->show());

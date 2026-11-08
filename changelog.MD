@@ -123,3 +123,19 @@ Implementações:
 - Views administrativas com filtros, paginação e respostas full/HTMX.
 - Testes unitários e de integração PostgreSQL para CRUD, senha, duplicidade e integridade.
 - Roteiro caixa-preta em `docs/tests/blackbox/sprint-06.md`.
+
+## 2026-11-08 — Sprint 07 — Grupos e Usuários × Grupos
+
+Status: concluída tecnicamente; homologação caixa-preta pendente.
+
+Implementações:
+
+- DTO `GroupInput` e `GroupValidator` com normalização e regex de código.
+- `GroupRepository` com CRUD, listagem, associação e sincronização transacional.
+- `GroupManagementService` com proteção estrutural do grupo `ADMIN`.
+- CRUD administrativo de grupos protegido por ADMIN.
+- Tela orientada pelo usuário para associação múltipla usuário–grupo.
+- Atualização em lote por diff, remoção de associações desmarcadas e rejeição de grupos inativos.
+- Views administrativas com filtro, paginação e respostas full/HTMX.
+- Testes unitários e PostgreSQL reais para CRUD, regex, ADMIN, associação, remoção e rollback.
+- Roteiro caixa-preta em `docs/tests/blackbox/sprint-07.md`.
