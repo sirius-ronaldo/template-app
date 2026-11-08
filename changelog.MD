@@ -103,3 +103,23 @@ Implementações:
 - Compatibilidade da infraestrutura com respostas full e HTMX.
 - Testes automatizados de renderer, flash, paginação e visibilidade do menu.
 - Roteiro caixa-preta em `docs/tests/blackbox/sprint-05.md`.
+
+## 2026-11-08 — Sprint 06 — Usuários
+
+Status: concluída tecnicamente; homologação caixa-preta pendente.
+
+Implementações:
+
+- DTO `UserInput` e `UserValidator` específicos para usuários.
+- `UserRepository` com listagem filtrada, paginação, CRUD, status e senha.
+- `UserManagementService` com validações, Argon2id e regras de proteção do ADMIN.
+- CRUD administrativo de usuários protegido por ADMIN.
+- Login case-sensitive e único, e-mail obrigatório e validado.
+- Edição cadastral separada da alteração de senha.
+- Reset administrativo de senha em tela e ação próprias.
+- Ativação, inativação e exclusão respeitando integridade referencial.
+- Bloqueio de auto-inativação e autoexclusão do ADMIN autenticado.
+- Registro de mensagens operacionais sem dados sensíveis.
+- Views administrativas com filtros, paginação e respostas full/HTMX.
+- Testes unitários e de integração PostgreSQL para CRUD, senha, duplicidade e integridade.
+- Roteiro caixa-preta em `docs/tests/blackbox/sprint-06.md`.

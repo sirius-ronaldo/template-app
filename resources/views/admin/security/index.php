@@ -10,6 +10,7 @@ ob_start();
 <section class="rounded-3xl bg-white p-8 shadow-sm">
     <h1 class="text-2xl font-bold">Configurações &gt; Segurança</h1>
     <p class="mt-2 text-sm text-slate-600">Tela piloto para validar filtros, paginação e respostas HTMX.</p>
+    <p class="mt-4"><a class="font-medium text-emerald-700" href="/configuracoes/usuarios">Administrar usuários</a></p>
     <form class="mt-6" method="get" action="/configuracoes/seguranca" hx-get="/configuracoes/seguranca" hx-target="#security-table" hx-push-url="true">
         <label class="text-sm font-medium" for="filter">Filtro</label>
         <input class="mt-2 rounded-xl border border-slate-300 px-4 py-2" id="filter" name="filter" value="<?= $this->e($filter) ?>">

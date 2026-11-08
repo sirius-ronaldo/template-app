@@ -8,6 +8,7 @@ use App\Controller\LoginController;
 use App\Controller\LogoutController;
 use App\Controller\PasswordController;
 use App\Controller\AdminPilotController;
+use App\Controller\UserController;
 use App\Controller\HomeController;
 use App\Controller\StatusController;
 use App\Middleware\AuthenticationMiddleware;
@@ -17,6 +18,8 @@ use App\Middleware\AuthorizationMiddleware;
 use App\Repository\DatabaseDiagnosticsRepository;
 use App\Repository\UserCredentialRepository;
 use App\Repository\UserCredentialRepositoryInterface;
+use App\Repository\UserRepository;
+use App\Repository\UserRepositoryInterface;
 use App\Repository\AuthorizationRepository;
 use App\Service\AuthenticationService;
 use App\Service\AdminChecker;
@@ -33,6 +36,8 @@ use App\Support\Session;
 use App\Support\SessionManager;
 use App\Support\View;
 use App\Support\ViewRenderer;
+use App\Validator\UserValidator;
+use App\Service\UserManagementService;
 use PDO;
 use Psr\Log\LoggerInterface;
 
@@ -58,7 +63,8 @@ final class AppFactory
             ViewRenderer::class,
             static fn (Container $c): ViewRenderer => new ViewRenderer(
                 dirname(__DIR__, 2) . '/resources/views',
-                $c->get(FlashBag::class)
+                $c->get(FlashBag::class),
+                $c->get(CsrfTokenManager::class)
             )
         );
         $container->singleton(SessionManager::class, static fn (Container $c): SessionManager => new SessionManager(
@@ -118,6 +124,24 @@ final class AppFactory
             static fn (Container $c): UserCredentialRepositoryInterface => $c->get(UserCredentialRepository::class)
         );
         $container->singleton(
+            UserRepository::class,
+            static fn (Container $c): UserRepository => new UserRepository($c->get(PDO::class))
+        );
+        $container->singleton(
+            UserRepositoryInterface::class,
+            static fn (Container $c): UserRepositoryInterface => $c->get(UserRepository::class)
+        );
+        $container->singleton(UserValidator::class, static fn (): UserValidator => new UserValidator());
+        $container->singleton(
+            UserManagementService::class,
+            static fn (Container $c): UserManagementService => new UserManagementService(
+                $c->get(UserRepositoryInterface::class),
+                $c->get(PasswordHasher::class),
+                $c->get(UserValidator::class),
+                $c->get(AdminChecker::class)
+            )
+        );
+        $container->singleton(
             AuthorizationRepository::class,
             static fn (Container $c): AuthorizationRepository => new AuthorizationRepository($c->get(PDO::class))
         );
@@ -169,6 +193,15 @@ final class AppFactory
         $container->singleton(
             AdminPilotController::class,
             static fn (Container $c): AdminPilotController => new AdminPilotController($c->get(ViewRenderer::class))
+        );
+        $container->singleton(
+            UserController::class,
+            static fn (Container $c): UserController => new UserController(
+                $c->get(ViewRenderer::class),
+                $c->get(UserManagementService::class),
+                $c->get(SessionManager::class),
+                $c->get(FlashBag::class)
+            )
         );
         $container->singleton(
             AuthenticationMiddleware::class,

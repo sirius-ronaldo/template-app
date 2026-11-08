@@ -7,6 +7,7 @@ use App\Controller\LoginController;
 use App\Controller\LogoutController;
 use App\Controller\PasswordController;
 use App\Controller\AdminPilotController;
+use App\Controller\UserController;
 use App\Controller\StatusController;
 use App\Support\Container;
 use App\Support\Request;
@@ -27,6 +28,60 @@ return static function (Container $container): Router {
         'GET',
         '/configuracoes/seguranca',
         static fn (Request $request): Response => $container->get(AdminPilotController::class)->index($request),
+        metadata: ['admin' => true]
+    );
+    $router->add(
+        'GET',
+        '/configuracoes/usuarios',
+        static fn (Request $request): Response => $container->get(UserController::class)->index($request),
+        metadata: ['admin' => true]
+    );
+    $router->add(
+        'GET',
+        '/configuracoes/usuarios/novo',
+        static fn (Request $request): Response => $container->get(UserController::class)->createForm($request),
+        metadata: ['admin' => true]
+    );
+    $router->add(
+        'POST',
+        '/configuracoes/usuarios',
+        static fn (Request $request): Response => $container->get(UserController::class)->create($request),
+        metadata: ['admin' => true]
+    );
+    $router->add(
+        'GET',
+        '/configuracoes/usuarios/{id:\\d+}/editar',
+        static fn (Request $request, int $id): Response => $container->get(UserController::class)->editForm($request, $id),
+        metadata: ['admin' => true]
+    );
+    $router->add(
+        'POST',
+        '/configuracoes/usuarios/{id:\\d+}',
+        static fn (Request $request, int $id): Response => $container->get(UserController::class)->update($request, $id),
+        metadata: ['admin' => true]
+    );
+    $router->add(
+        'GET',
+        '/configuracoes/usuarios/{id:\\d+}/senha',
+        static fn (Request $request, int $id): Response => $container->get(UserController::class)->resetForm($request, $id),
+        metadata: ['admin' => true]
+    );
+    $router->add(
+        'POST',
+        '/configuracoes/usuarios/{id:\\d+}/senha',
+        static fn (Request $request, int $id): Response => $container->get(UserController::class)->reset($request, $id),
+        metadata: ['admin' => true]
+    );
+    $router->add(
+        'POST',
+        '/configuracoes/usuarios/{id:\\d+}/status',
+        static fn (Request $request, int $id): Response => $container->get(UserController::class)->toggle($request, $id),
+        metadata: ['admin' => true]
+    );
+    $router->add(
+        'POST',
+        '/configuracoes/usuarios/{id:\\d+}/excluir',
+        static fn (Request $request, int $id): Response => $container->get(UserController::class)->delete($request, $id),
         metadata: ['admin' => true]
     );
     $router->add('GET', '/status', static fn (Request $request): Response => $container->get(StatusController::class)->show());

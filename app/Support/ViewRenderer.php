@@ -8,7 +8,8 @@ final class ViewRenderer
 {
     public function __construct(
         private readonly string $basePath,
-        private readonly FlashBag $flash
+        private readonly FlashBag $flash,
+        private readonly ?CsrfTokenManager $csrf = null
     ) {
     }
 
@@ -34,6 +35,11 @@ final class ViewRenderer
     public function flash(string $key, mixed $default = null): mixed
     {
         return $this->flash->pull($key, $default);
+    }
+
+    public function csrfToken(): string
+    {
+        return $this->csrf?->token() ?? '';
     }
 
     /** @param array<string, mixed> $data */
