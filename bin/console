@@ -1,0 +1,60 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types=1);
+
+use App\Config\AppConfig;
+use App\Config\AppFactory;
+use App\Exception\InitialAdminException;
+use App\Repository\SecurityUserRepository;
+use App\Service\InitialAdminService;
+use Dotenv\Dotenv;
+
+$rootPath = dirname(__DIR__);
+require $rootPath . '/vendor/autoload.php';
+Dotenv::createImmutable($rootPath)->safeLoad();
+
+$command = $argv[1] ?? null;
+if ($command !== 'security:create-initial-admin') {
+    fwrite(STDERR, "Comando invalido.\n");
+    exit(1);
+}
+
+$required = [
+    'INITIAL_ADMIN_LOGIN',
+    'INITIAL_ADMIN_NAME',
+    'INITIAL_ADMIN_EMAIL',
+    'INITIAL_ADMIN_PASSWORD',
+];
+foreach ($required as $variable) {
+    if (!isset($_ENV[$variable]) || $_ENV[$variable] === '') {
+        fwrite(STDERR, sprintf('Configuracao obrigatoria ausente: %s.\n', $variable));
+        exit(1);
+    }
+}
+
+$email = (string) $_ENV['INITIAL_ADMIN_EMAIL'];
+if (filter_var($email, FILTER_VALIDATE_EMAIL) === false) {
+    fwrite(STDERR, "INITIAL_ADMIN_EMAIL invalido.\n");
+    exit(1);
+}
+
+$config = AppConfig::fromEnvironment($_ENV, $rootPath);
+$container = AppFactory::build($config);
+$pdo = $container->get(\PDO::class);
+$service = new InitialAdminService($pdo, new SecurityUserRepository($pdo));
+
+try {
+    $service->create(
+        trim((string) $_ENV['INITIAL_ADMIN_LOGIN']),
+        trim((string) $_ENV['INITIAL_ADMIN_NAME']),
+        $email,
+        (string) $_ENV['INITIAL_ADMIN_PASSWORD']
+    );
+} catch (InitialAdminException $exception) {
+    fwrite(STDERR, $exception->getMessage() . "\n");
+    exit(1);
+}
+
+fwrite(STDOUT, "Usuario ADMIN inicial criado com sucesso.\n");
+fwrite(STDOUT, "Remova INITIAL_ADMIN_PASSWORD do .env assim que possivel.\n");

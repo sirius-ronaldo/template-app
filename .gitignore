@@ -6,5 +6,7 @@
 /.phpstan.cache/
 /.idea/
 /.vscode/
+/docs/
 *.log
+*.nbk
 .DS_Store
