@@ -36,6 +36,12 @@ Fluxo principal: Controller -> Service -> Repository -> PDO.
 - O arquivo `dev_changelog.MD` identifica a sprint corrente. Ao receber ordem explicita para iniciar a proxima sprint, acrescente `ok` a sprint anterior e registre a nova sprint sem `ok`.
 - O marcador `ok` representa autorizacao para avancar no desenvolvimento, nao necessariamente aprovacao dos testes caixa-preta pelos stakeholders.
 
+## Changelog do projeto
+- O arquivo `changelog.MD`, na raiz do projeto, deve ser atualizado ao final de cada sprint.
+- Cada entrada deve registrar a data, o número e o nome da sprint, o status e a lista objetiva das principais implementações realizadas.
+- Ao concluir uma sprint, registre também os testes automatizados executados e eventuais limitações ou pendências relevantes.
+- Preserve as entradas históricas; não reescreva nem remova registros de sprints anteriores.
+
 ## Regras
 - Use `declare(strict_types=1);`.
 - Siga PSR-12 e PSR-4.
