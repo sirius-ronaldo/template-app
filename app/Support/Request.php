@@ -11,6 +11,7 @@ final class Request
      * @param array<string, mixed> $parsedBody
      * @param array<string, array<string, mixed>> $files
      * @param array<string, string> $server
+     * @param array<string, mixed> $attributes
      */
     public function __construct(
         private readonly string $method,
@@ -18,7 +19,8 @@ final class Request
         private readonly array $query,
         private readonly array $parsedBody,
         private readonly array $files,
-        private readonly array $server
+        private readonly array $server,
+        private readonly array $attributes = []
     ) {
     }
 
@@ -92,5 +94,24 @@ final class Request
     public function isHtmx(): bool
     {
         return $this->header('HX-Request') === 'true';
+    }
+
+    public function attribute(string $key, mixed $default = null): mixed
+    {
+        return $this->attributes[$key] ?? $default;
+    }
+
+    /** @param array<string, mixed> $attributes */
+    public function withAttributes(array $attributes): self
+    {
+        return new self(
+            $this->method,
+            $this->path,
+            $this->query,
+            $this->parsedBody,
+            $this->files,
+            $this->server,
+            $attributes + $this->attributes
+        );
     }
 }

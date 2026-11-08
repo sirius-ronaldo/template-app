@@ -11,10 +11,15 @@ use App\Controller\HomeController;
 use App\Controller\StatusController;
 use App\Middleware\AuthenticationMiddleware;
 use App\Middleware\CsrfMiddleware;
+use App\Middleware\AdminMiddleware;
+use App\Middleware\AuthorizationMiddleware;
 use App\Repository\DatabaseDiagnosticsRepository;
 use App\Repository\UserCredentialRepository;
 use App\Repository\UserCredentialRepositoryInterface;
+use App\Repository\AuthorizationRepository;
 use App\Service\AuthenticationService;
+use App\Service\AdminChecker;
+use App\Service\Authorizer;
 use App\Service\HomeService;
 use App\Service\PasswordChangeService;
 use App\Support\Container;
@@ -98,6 +103,21 @@ final class AppFactory
             static fn (Container $c): UserCredentialRepositoryInterface => $c->get(UserCredentialRepository::class)
         );
         $container->singleton(
+            AuthorizationRepository::class,
+            static fn (Container $c): AuthorizationRepository => new AuthorizationRepository($c->get(PDO::class))
+        );
+        $container->singleton(
+            AdminChecker::class,
+            static fn (Container $c): AdminChecker => new AdminChecker($c->get(AuthorizationRepository::class))
+        );
+        $container->singleton(
+            Authorizer::class,
+            static fn (Container $c): Authorizer => new Authorizer(
+                $c->get(AuthorizationRepository::class),
+                $c->get(AdminChecker::class)
+            )
+        );
+        $container->singleton(
             PasswordChangeService::class,
             static fn (Container $c): PasswordChangeService => new PasswordChangeService(
                 $c->get(UserCredentialRepositoryInterface::class),
@@ -141,6 +161,20 @@ final class AppFactory
         $container->singleton(
             CsrfMiddleware::class,
             static fn (Container $c): CsrfMiddleware => new CsrfMiddleware($c->get(CsrfTokenManager::class))
+        );
+        $container->singleton(
+            AdminMiddleware::class,
+            static fn (Container $c): AdminMiddleware => new AdminMiddleware(
+                $c->get(SessionManager::class),
+                $c->get(AdminChecker::class)
+            )
+        );
+        $container->singleton(
+            AuthorizationMiddleware::class,
+            static fn (Container $c): AuthorizationMiddleware => new AuthorizationMiddleware(
+                $c->get(SessionManager::class),
+                $c->get(Authorizer::class)
+            )
         );
         $container->singleton(
             HomeService::class,

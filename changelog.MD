@@ -67,3 +67,21 @@ Implementações:
 - Resposta `HX-Redirect: /login` para sessão expirada em requisições HTMX.
 - Testes automatizados de CSRF e troca de senha.
 - Roteiro caixa-preta em `docs/tests/blackbox/sprint-03.md`.
+
+## 2026-11-08 — Sprint 04 — Autorização e ADMIN
+
+Status: concluída tecnicamente; homologação caixa-preta pendente.
+
+Implementações:
+
+- `AuthorizationRepository` com SQL centralizado para usuário, ADMIN e grants.
+- `AdminChecker` e `Authorizer` com `can()` e `authorize()`.
+- Tratamento especial para ADMIN ativo e grants cumulativos entre grupos ativos.
+- Validação de usuário, grupo, aplicação, tipo, permissão e compatibilidade da permissão com o tipo.
+- Metadata de rotas para `auth`, `admin`, `application` e `permission`.
+- Rejeição de metadata inconsistente no registro de rotas.
+- Inclusão automática de CSRF antes da autenticação e autorização em mutações.
+- `AdminMiddleware` e `AuthorizationMiddleware`.
+- Respostas 403, 404 e 405, incluindo header `Allow` quando aplicável.
+- Testes automatizados unitários e de integração contra PostgreSQL real.
+- Roteiro caixa-preta em `docs/tests/blackbox/sprint-04.md`.
