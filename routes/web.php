@@ -3,6 +3,8 @@
 declare(strict_types=1);
 
 use App\Controller\HomeController;
+use App\Controller\LoginController;
+use App\Controller\LogoutController;
 use App\Controller\StatusController;
 use App\Support\Container;
 use App\Support\Request;
@@ -13,6 +15,10 @@ return static function (Container $container): Router {
     $router = new Router();
 
     $router->add('GET', '/', static fn (Request $request): Response => $container->get(HomeController::class)->index());
+    $router->add('GET', '/Home', static fn (Request $request): Response => $container->get(HomeController::class)->index(), [\App\Middleware\AuthenticationMiddleware::class]);
+    $router->add('GET', '/login', static fn (Request $request): Response => $container->get(LoginController::class)->form());
+    $router->add('POST', '/login', static fn (Request $request): Response => $container->get(LoginController::class)->login($request));
+    $router->add('POST', '/logout', static fn (Request $request): Response => $container->get(LogoutController::class)->logout(), [\App\Middleware\AuthenticationMiddleware::class]);
     $router->add('GET', '/status', static fn (Request $request): Response => $container->get(StatusController::class)->show());
 
     return $router;

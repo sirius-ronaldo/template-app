@@ -5,6 +5,7 @@ declare(strict_types=1);
 /** @var string $content */
 /** @var string|null $flashSuccess */
 /** @var string|null $flashError */
+/** @var array<string, mixed>|null $auth */
 /** @var App\Support\View $this */
 ?>
 <!doctype html>
@@ -25,6 +26,14 @@ declare(strict_types=1);
                 <p class="mt-1 text-sm text-slate-600">
                     Base para projetos PHP 8.2 com Docker, PostgreSQL, HTMX, Tailwind CSS e Codex.
                 </p>
+                <?php if (is_array($auth)) : ?>
+                    <form class="mt-4" method="post" action="/logout">
+                        <button
+                            class="rounded-xl bg-slate-900 px-4 py-2 text-sm font-medium text-white"
+                            type="submit"
+                        >Sair</button>
+                    </form>
+                <?php endif; ?>
             </div>
         </header>
         <main class="mx-auto max-w-6xl px-6 py-8">

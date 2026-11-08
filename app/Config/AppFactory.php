@@ -4,14 +4,22 @@ declare(strict_types=1);
 
 namespace App\Config;
 
+use App\Controller\LoginController;
+use App\Controller\LogoutController;
 use App\Controller\HomeController;
 use App\Controller\StatusController;
+use App\Middleware\AuthenticationMiddleware;
 use App\Repository\DatabaseDiagnosticsRepository;
+use App\Repository\UserCredentialRepository;
+use App\Repository\UserCredentialRepositoryInterface;
+use App\Service\AuthenticationService;
 use App\Service\HomeService;
 use App\Support\Container;
 use App\Support\Csrf;
 use App\Support\FileLogger;
+use App\Support\PasswordHasher;
 use App\Support\Session;
+use App\Support\SessionManager;
 use App\Support\View;
 use PDO;
 use Psr\Log\LoggerInterface;
@@ -30,6 +38,10 @@ final class AppFactory
         );
 
         $container->singleton(Session::class, static fn (): Session => new Session());
+        $container->singleton(SessionManager::class, static fn (Container $c): SessionManager => new SessionManager(
+            $c->get(Session::class)
+        ));
+        $container->singleton(PasswordHasher::class, static fn (): PasswordHasher => new PasswordHasher());
         $container->singleton(
             Csrf::class,
             static fn (Container $c): Csrf => new Csrf($c->get(Session::class))
@@ -67,6 +79,40 @@ final class AppFactory
             DatabaseDiagnosticsRepository::class,
             static fn (Container $c): DatabaseDiagnosticsRepository => new DatabaseDiagnosticsRepository(
                 $c->get(PDO::class)
+            )
+        );
+        $container->singleton(
+            UserCredentialRepository::class,
+            static fn (Container $c): UserCredentialRepository => new UserCredentialRepository($c->get(PDO::class))
+        );
+        $container->singleton(
+            UserCredentialRepositoryInterface::class,
+            static fn (Container $c): UserCredentialRepositoryInterface => $c->get(UserCredentialRepository::class)
+        );
+        $container->singleton(
+            AuthenticationService::class,
+            static fn (Container $c): AuthenticationService => new AuthenticationService(
+                $c->get(UserCredentialRepositoryInterface::class),
+                $c->get(PasswordHasher::class)
+            )
+        );
+        $container->singleton(
+            LoginController::class,
+            static fn (Container $c): LoginController => new LoginController(
+                $c->get(View::class),
+                $c->get(AuthenticationService::class),
+                $c->get(SessionManager::class)
+            )
+        );
+        $container->singleton(
+            LogoutController::class,
+            static fn (Container $c): LogoutController => new LogoutController($c->get(SessionManager::class))
+        );
+        $container->singleton(
+            AuthenticationMiddleware::class,
+            static fn (Container $c): AuthenticationMiddleware => new AuthenticationMiddleware(
+                $c->get(SessionManager::class),
+                $c->get(UserCredentialRepositoryInterface::class)
             )
         );
         $container->singleton(
