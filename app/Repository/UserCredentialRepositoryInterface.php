@@ -12,4 +12,6 @@ interface UserCredentialRepositoryInterface
     public function isActive(int $userId): bool;
 
     public function updatePasswordHash(int $userId, string $passwordHash): void;
+
+    public function findPasswordHash(int $userId): ?string;
 }

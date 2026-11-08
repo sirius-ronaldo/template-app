@@ -41,4 +41,9 @@ final class View
     {
         return htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8');
     }
+
+    public function e(mixed $value): string
+    {
+        return htmlspecialchars((string) $value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+    }
 }

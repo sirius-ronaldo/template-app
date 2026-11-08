@@ -25,7 +25,9 @@ final class AuthenticationMiddleware implements MiddlewareInterface
             if ($credentials !== null) {
                 $this->sessions->logout();
             }
-            return Response::redirect('/login');
+            return $request->isHtmx()
+                ? Response::html('', 401, ['HX-Redirect' => '/login'])
+                : Response::redirect('/login');
         }
         $this->sessions->touch();
         return null;

@@ -21,7 +21,9 @@ final class Response
      */
     public static function html(string $body, int $status = 200, array $headers = []): self
     {
-        return new self($body, $status, $headers + ['Content-Type' => 'text/html; charset=UTF-8']);
+        return new self($body, $status, self::securityHeaders() + $headers + [
+            'Content-Type' => 'text/html; charset=UTF-8',
+        ]);
     }
 
     /**
@@ -29,18 +31,39 @@ final class Response
      */
     public static function redirect(string $location, int $status = 302, array $headers = []): self
     {
-        return new self('', $status, $headers + ['Location' => $location]);
+        return new self('', $status, self::securityHeaders() + $headers + ['Location' => $location]);
     }
 
     public static function download(string $body, string $filename, string $contentType): self
     {
         $dispositionName = str_replace(['"', "\r", "\n"], '', $filename);
 
-        return new self($body, 200, [
+        return new self($body, 200, self::securityHeaders() + [
             'Content-Type' => $contentType,
             'Content-Length' => (string) strlen($body),
             'Content-Disposition' => 'attachment; filename="' . $dispositionName . '"',
         ]);
+    }
+
+    /** @return array<string, string> */
+    private static function securityHeaders(): array
+    {
+        return [
+            'X-Content-Type-Options' => 'nosniff',
+            'Referrer-Policy' => 'strict-origin-when-cross-origin',
+            'X-Frame-Options' => 'SAMEORIGIN',
+        ];
+    }
+
+    public function status(): int
+    {
+        return $this->status;
+    }
+
+    /** @return array<string, string> */
+    public function headers(): array
+    {
+        return $this->headers;
     }
 
     public function send(): void

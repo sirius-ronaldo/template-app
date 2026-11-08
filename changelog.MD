@@ -50,3 +50,20 @@ Implementações:
 - View de login e ação de logout.
 - Roteiro caixa-preta em `docs/tests/blackbox/sprint-02.md`.
 - Validação automatizada com PHPCS, PHPStan e PHPUnit.
+
+## 2026-11-08 — Sprint 03 — CSRF, segurança web e alteração da própria senha
+
+Status: concluída tecnicamente; homologação caixa-preta pendente.
+
+Implementações:
+
+- `CsrfTokenManager` com token por sessão, `random_bytes()` e validação com `hash_equals()`.
+- `CsrfMiddleware` protegendo POST, PUT, PATCH e DELETE, com suporte a formulários tradicionais e HTMX.
+- Headers de segurança `X-Content-Type-Options`, `Referrer-Policy` e `X-Frame-Options`.
+- Helper `View::e()` com `htmlspecialchars()` usando `ENT_QUOTES | ENT_SUBSTITUTE`.
+- Rotas autenticadas `GET /minha-senha` e `POST /minha-senha`.
+- Validação de senha atual, mínimo de 8 caracteres e confirmação da nova senha.
+- Invalidação da sessão após troca bem-sucedida e redirecionamento para `/login`.
+- Resposta `HX-Redirect: /login` para sessão expirada em requisições HTMX.
+- Testes automatizados de CSRF e troca de senha.
+- Roteiro caixa-preta em `docs/tests/blackbox/sprint-03.md`.

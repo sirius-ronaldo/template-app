@@ -6,6 +6,7 @@ declare(strict_types=1);
 /** @var string|null $flashSuccess */
 /** @var string|null $flashError */
 /** @var array<string, mixed>|null $auth */
+/** @var App\Support\Csrf $csrf */
 /** @var App\Support\View $this */
 ?>
 <!doctype html>
@@ -27,7 +28,9 @@ declare(strict_types=1);
                     Base para projetos PHP 8.2 com Docker, PostgreSQL, HTMX, Tailwind CSS e Codex.
                 </p>
                 <?php if (is_array($auth)) : ?>
+                    <a class="mr-3 text-sm font-medium text-emerald-700" href="/minha-senha">Minha senha</a>
                     <form class="mt-4" method="post" action="/logout">
+                        <input type="hidden" name="_csrf" value="<?= $this->e($csrf->token()) ?>">
                         <button
                             class="rounded-xl bg-slate-900 px-4 py-2 text-sm font-medium text-white"
                             type="submit"

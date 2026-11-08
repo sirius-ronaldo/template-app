@@ -3,10 +3,12 @@
 declare(strict_types=1);
 
 /** @var App\Support\View $this */
+/** @var App\Support\Csrf $csrf */
 /** @var string|null $error */
 ?>
 <main class="flex min-h-screen items-center justify-center px-6 py-12">
     <form method="post" action="/login" class="w-full max-w-md rounded-3xl bg-white p-8 shadow-sm">
+        <input type="hidden" name="_csrf" value="<?= $this->e($csrf->token()) ?>">
         <p class="text-sm font-semibold tracking-[0.3em] text-emerald-700">TEMPLATE</p>
         <h1 class="mt-2 text-2xl font-bold">Entrar</h1>
         <?php if (isset($error) && $error !== '') : ?>

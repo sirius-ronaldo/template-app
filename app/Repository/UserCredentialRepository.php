@@ -44,4 +44,14 @@ final class UserCredentialRepository implements UserCredentialRepositoryInterfac
         $statement = $this->pdo->prepare('UPDATE seg_usuarios SET seg_usu_senha_hash = :hash WHERE seg_usu_id = :id');
         $statement->execute(['hash' => $passwordHash, 'id' => $userId]);
     }
+
+    public function findPasswordHash(int $userId): ?string
+    {
+        $statement = $this->pdo->prepare(
+            'SELECT seg_usu_senha_hash FROM seg_usuarios WHERE seg_usu_id = :id AND seg_usu_ativo = true'
+        );
+        $statement->execute(['id' => $userId]);
+        $hash = $statement->fetchColumn();
+        return is_string($hash) && $hash !== '' ? $hash : null;
+    }
 }
