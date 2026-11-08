@@ -9,6 +9,8 @@ use App\Controller\PasswordController;
 use App\Controller\AdminPilotController;
 use App\Controller\UserController;
 use App\Controller\GroupController;
+use App\Controller\PermissionController;
+use App\Controller\ApplicationTypeController;
 use App\Controller\StatusController;
 use App\Support\Container;
 use App\Support\Request;
@@ -139,6 +141,22 @@ return static function (Container $container): Router {
         static fn (Request $request, int $id): Response => $container->get(GroupController::class)->syncUserGroups($request, $id),
         metadata: ['admin' => true]
     );
+    $router->add('GET', '/configuracoes/permissoes', static fn (Request $request): Response => $container->get(PermissionController::class)->index($request), metadata: ['admin' => true]);
+    $router->add('GET', '/configuracoes/permissoes/novo', static fn (Request $request): Response => $container->get(PermissionController::class)->form($request), metadata: ['admin' => true]);
+    $router->add('POST', '/configuracoes/permissoes', static fn (Request $request): Response => $container->get(PermissionController::class)->save($request), metadata: ['admin' => true]);
+    $router->add('GET', '/configuracoes/permissoes/{id:\\d+}/editar', static fn (Request $request, int $id): Response => $container->get(PermissionController::class)->form($request, $id), metadata: ['admin' => true]);
+    $router->add('POST', '/configuracoes/permissoes/{id:\\d+}', static fn (Request $request, int $id): Response => $container->get(PermissionController::class)->save($request, $id), metadata: ['admin' => true]);
+    $router->add('POST', '/configuracoes/permissoes/{id:\\d+}/status', static fn (Request $request, int $id): Response => $container->get(PermissionController::class)->toggle($request, $id), metadata: ['admin' => true]);
+    $router->add('POST', '/configuracoes/permissoes/{id:\\d+}/excluir', static fn (Request $request, int $id): Response => $container->get(PermissionController::class)->delete($request, $id), metadata: ['admin' => true]);
+    $router->add('GET', '/configuracoes/tipos', static fn (Request $request): Response => $container->get(ApplicationTypeController::class)->index($request), metadata: ['admin' => true]);
+    $router->add('GET', '/configuracoes/tipos/novo', static fn (Request $request): Response => $container->get(ApplicationTypeController::class)->form($request), metadata: ['admin' => true]);
+    $router->add('POST', '/configuracoes/tipos', static fn (Request $request): Response => $container->get(ApplicationTypeController::class)->save($request), metadata: ['admin' => true]);
+    $router->add('GET', '/configuracoes/tipos/{id:\\d+}/editar', static fn (Request $request, int $id): Response => $container->get(ApplicationTypeController::class)->form($request, $id), metadata: ['admin' => true]);
+    $router->add('POST', '/configuracoes/tipos/{id:\\d+}', static fn (Request $request, int $id): Response => $container->get(ApplicationTypeController::class)->save($request, $id), metadata: ['admin' => true]);
+    $router->add('POST', '/configuracoes/tipos/{id:\\d+}/status', static fn (Request $request, int $id): Response => $container->get(ApplicationTypeController::class)->toggle($request, $id), metadata: ['admin' => true]);
+    $router->add('POST', '/configuracoes/tipos/{id:\\d+}/excluir', static fn (Request $request, int $id): Response => $container->get(ApplicationTypeController::class)->delete($request, $id), metadata: ['admin' => true]);
+    $router->add('GET', '/configuracoes/tipos/{id:\\d+}/permissoes', static fn (Request $request, int $id): Response => $container->get(ApplicationTypeController::class)->relationForm($request, $id), metadata: ['admin' => true]);
+    $router->add('POST', '/configuracoes/tipos/{id:\\d+}/permissoes', static fn (Request $request, int $id): Response => $container->get(ApplicationTypeController::class)->syncRelation($request, $id), metadata: ['admin' => true]);
     $router->add('GET', '/status', static fn (Request $request): Response => $container->get(StatusController::class)->show());
 
     return $router;

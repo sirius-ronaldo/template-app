@@ -10,6 +10,8 @@ use App\Controller\PasswordController;
 use App\Controller\AdminPilotController;
 use App\Controller\UserController;
 use App\Controller\GroupController;
+use App\Controller\PermissionController;
+use App\Controller\ApplicationTypeController;
 use App\Controller\HomeController;
 use App\Controller\StatusController;
 use App\Middleware\AuthenticationMiddleware;
@@ -23,6 +25,10 @@ use App\Repository\UserRepository;
 use App\Repository\UserRepositoryInterface;
 use App\Repository\GroupRepository;
 use App\Repository\GroupRepositoryInterface;
+use App\Repository\PermissionRepository;
+use App\Repository\PermissionRepositoryInterface;
+use App\Repository\ApplicationTypeRepository;
+use App\Repository\ApplicationTypeRepositoryInterface;
 use App\Repository\AuthorizationRepository;
 use App\Service\AuthenticationService;
 use App\Service\AdminChecker;
@@ -41,8 +47,11 @@ use App\Support\View;
 use App\Support\ViewRenderer;
 use App\Validator\UserValidator;
 use App\Validator\GroupValidator;
+use App\Validator\CatalogValidator;
 use App\Service\UserManagementService;
 use App\Service\GroupManagementService;
+use App\Service\PermissionManagementService;
+use App\Service\ApplicationTypeManagementService;
 use PDO;
 use Psr\Log\LoggerInterface;
 
@@ -138,6 +147,7 @@ final class AppFactory
         );
         $container->singleton(UserValidator::class, static fn (): UserValidator => new UserValidator());
         $container->singleton(GroupValidator::class, static fn (): GroupValidator => new GroupValidator());
+        $container->singleton(CatalogValidator::class, static fn (): CatalogValidator => new CatalogValidator());
         $container->singleton(
             GroupRepository::class,
             static fn (Container $c): GroupRepository => new GroupRepository($c->get(PDO::class))
@@ -151,6 +161,36 @@ final class AppFactory
             static fn (Container $c): GroupManagementService => new GroupManagementService(
                 $c->get(GroupRepositoryInterface::class),
                 $c->get(GroupValidator::class)
+            )
+        );
+        $container->singleton(
+            PermissionRepository::class,
+            static fn (Container $c): PermissionRepository => new PermissionRepository($c->get(PDO::class))
+        );
+        $container->singleton(
+            PermissionRepositoryInterface::class,
+            static fn (Container $c): PermissionRepositoryInterface => $c->get(PermissionRepository::class)
+        );
+        $container->singleton(
+            ApplicationTypeRepository::class,
+            static fn (Container $c): ApplicationTypeRepository => new ApplicationTypeRepository($c->get(PDO::class))
+        );
+        $container->singleton(
+            ApplicationTypeRepositoryInterface::class,
+            static fn (Container $c): ApplicationTypeRepositoryInterface => $c->get(ApplicationTypeRepository::class)
+        );
+        $container->singleton(
+            PermissionManagementService::class,
+            static fn (Container $c): PermissionManagementService => new PermissionManagementService(
+                $c->get(PermissionRepositoryInterface::class),
+                $c->get(CatalogValidator::class)
+            )
+        );
+        $container->singleton(
+            ApplicationTypeManagementService::class,
+            static fn (Container $c): ApplicationTypeManagementService => new ApplicationTypeManagementService(
+                $c->get(ApplicationTypeRepositoryInterface::class),
+                $c->get(CatalogValidator::class)
             )
         );
         $container->singleton(
@@ -230,6 +270,23 @@ final class AppFactory
                 $c->get(ViewRenderer::class),
                 $c->get(GroupManagementService::class),
                 $c->get(UserManagementService::class),
+                $c->get(FlashBag::class)
+            )
+        );
+        $container->singleton(
+            PermissionController::class,
+            static fn (Container $c): PermissionController => new PermissionController(
+                $c->get(ViewRenderer::class),
+                $c->get(PermissionManagementService::class),
+                $c->get(FlashBag::class)
+            )
+        );
+        $container->singleton(
+            ApplicationTypeController::class,
+            static fn (Container $c): ApplicationTypeController => new ApplicationTypeController(
+                $c->get(ViewRenderer::class),
+                $c->get(ApplicationTypeManagementService::class),
+                $c->get(PermissionManagementService::class),
                 $c->get(FlashBag::class)
             )
         );

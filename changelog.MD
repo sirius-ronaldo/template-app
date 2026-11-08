@@ -139,3 +139,21 @@ Implementações:
 - Views administrativas com filtro, paginação e respostas full/HTMX.
 - Testes unitários e PostgreSQL reais para CRUD, regex, ADMIN, associação, remoção e rollback.
 - Roteiro caixa-preta em `docs/tests/blackbox/sprint-07.md`.
+
+## 2026-11-08 — Sprint 08 — Catálogo de permissões, tipos e compatibilidade
+
+Status: concluída tecnicamente; homologação caixa-preta pendente.
+
+Implementações:
+
+- CRUD administrativo de permissões com código, nome, descrição e status ativo.
+- CRUD administrativo de tipos de aplicação com código, nome, descrição e status ativo.
+- Normalização de códigos com trim e uppercase, além de validação do padrão `^[A-Z][A-Z0-9_]*$`.
+- Bloqueio de códigos duplicados e tratamento de ativação, inativação e exclusão.
+- Tela administrativa para seleção explícita das relações tipo de aplicação × permissão.
+- Atualização em lote das relações em transação, com rollback quando houver permissão inativa ou inexistente.
+- Permissões inativas não podem ser incluídas em novas relações.
+- Remoção de relação não exclui grants de grupos; grants incompatíveis deixam de autorizar imediatamente.
+- Rotas e navegação administrativa para os novos catálogos.
+- Testes unitários e de integração PostgreSQL para CRUD, duplicidade, status, relações, rollback e impacto na autorização.
+- Roteiro caixa-preta em `docs/tests/blackbox/sprint-08.md`.
