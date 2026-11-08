@@ -17,7 +17,7 @@ declare(strict_types=1);
                 <td class="px-4 py-3"><?= $this->e($group['name']) ?></td>
                 <td class="px-4 py-3"><?= $this->e($group['description']) ?></td>
                 <td class="px-4 py-3"><?= (bool) $group['active'] ? 'Ativo' : 'Inativo' ?></td>
-                <td class="px-4 py-3"><a class="text-emerald-700" href="/configuracoes/grupos/<?= (int) $group['id'] ?>/editar">Editar</a></td>
+                <td class="px-4 py-3"><a class="mr-3 text-emerald-700" href="/configuracoes/grupos/<?= (int) $group['id'] ?>/editar">Editar</a><a class="text-emerald-700" href="/configuracoes/grupos/<?= (int) $group['id'] ?>/permissoes">Permissões</a></td>
             </tr>
         <?php endforeach; ?>
         </tbody>

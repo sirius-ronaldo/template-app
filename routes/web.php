@@ -12,6 +12,7 @@ use App\Controller\GroupController;
 use App\Controller\PermissionController;
 use App\Controller\ApplicationTypeController;
 use App\Controller\ApplicationController;
+use App\Controller\GrantController;
 use App\Controller\StatusController;
 use App\Support\Container;
 use App\Support\Request;
@@ -128,6 +129,18 @@ return static function (Container $container): Router {
         'POST',
         '/configuracoes/grupos/{id:\\d+}/excluir',
         static fn (Request $request, int $id): Response => $container->get(GroupController::class)->delete($request, $id),
+        metadata: ['admin' => true]
+    );
+    $router->add(
+        'GET',
+        '/configuracoes/grupos/{id:\\d+}/permissoes',
+        static fn (Request $request, int $id): Response => $container->get(GrantController::class)->form($request, $id),
+        metadata: ['admin' => true]
+    );
+    $router->add(
+        'POST',
+        '/configuracoes/grupos/{id:\\d+}/permissoes',
+        static fn (Request $request, int $id): Response => $container->get(GrantController::class)->sync($request, $id),
         metadata: ['admin' => true]
     );
     $router->add(

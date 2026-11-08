@@ -13,6 +13,7 @@ use App\Controller\GroupController;
 use App\Controller\PermissionController;
 use App\Controller\ApplicationTypeController;
 use App\Controller\ApplicationController;
+use App\Controller\GrantController;
 use App\Controller\HomeController;
 use App\Controller\StatusController;
 use App\Middleware\AuthenticationMiddleware;
@@ -32,6 +33,8 @@ use App\Repository\ApplicationTypeRepository;
 use App\Repository\ApplicationTypeRepositoryInterface;
 use App\Repository\ApplicationRepository;
 use App\Repository\ApplicationRepositoryInterface;
+use App\Repository\GrantRepository;
+use App\Repository\GrantRepositoryInterface;
 use App\Repository\AuthorizationRepository;
 use App\Service\AuthenticationService;
 use App\Service\AdminChecker;
@@ -56,6 +59,7 @@ use App\Service\GroupManagementService;
 use App\Service\PermissionManagementService;
 use App\Service\ApplicationTypeManagementService;
 use App\Service\ApplicationManagementService;
+use App\Service\GrantManagementService;
 use PDO;
 use Psr\Log\LoggerInterface;
 
@@ -192,6 +196,14 @@ final class AppFactory
             static fn (Container $c): ApplicationRepositoryInterface => $c->get(ApplicationRepository::class)
         );
         $container->singleton(
+            GrantRepository::class,
+            static fn (Container $c): GrantRepository => new GrantRepository($c->get(PDO::class))
+        );
+        $container->singleton(
+            GrantRepositoryInterface::class,
+            static fn (Container $c): GrantRepositoryInterface => $c->get(GrantRepository::class)
+        );
+        $container->singleton(
             PermissionManagementService::class,
             static fn (Container $c): PermissionManagementService => new PermissionManagementService(
                 $c->get(PermissionRepositoryInterface::class),
@@ -211,6 +223,12 @@ final class AppFactory
                 $c->get(ApplicationRepositoryInterface::class),
                 $c->get(ApplicationTypeRepositoryInterface::class),
                 $c->get(CatalogValidator::class)
+            )
+        );
+        $container->singleton(
+            GrantManagementService::class,
+            static fn (Container $c): GrantManagementService => new GrantManagementService(
+                $c->get(GrantRepositoryInterface::class)
             )
         );
         $container->singleton(
@@ -315,6 +333,15 @@ final class AppFactory
             static fn (Container $c): ApplicationController => new ApplicationController(
                 $c->get(ViewRenderer::class),
                 $c->get(ApplicationManagementService::class),
+                $c->get(FlashBag::class)
+            )
+        );
+        $container->singleton(
+            GrantController::class,
+            static fn (Container $c): GrantController => new GrantController(
+                $c->get(ViewRenderer::class),
+                $c->get(GrantManagementService::class),
+                $c->get(GroupManagementService::class),
                 $c->get(FlashBag::class)
             )
         );

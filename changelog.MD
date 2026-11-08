@@ -173,3 +173,18 @@ Implementações:
 - Impacto imediato da inativação, alteração de tipo e inativação do tipo no `Authorizer`.
 - Rotas, navegação administrativa, views full/HTMX e mensagens operacionais.
 - Roteiro caixa-preta em `docs/tests/blackbox/sprint-09.md`.
+
+## 2026-11-08 — Sprint 10 — Grupos × Aplicações × Permissões
+
+Status: em implementação técnica; homologação caixa-preta pendente.
+
+Implementações:
+
+- Matriz administrativa hierárquica de tipo, aplicação e permissões válidas por grupo.
+- Busca por código ou nome da aplicação e expansão/recolhimento por tipo e aplicação.
+- Seleção explícita de permissões por aplicação, com salvamento manual.
+- Validação backend de grupo, estado efetivo da aplicação e compatibilidade da permissão.
+- Sincronização incremental de grants em transação, com rollback em relações inválidas.
+- Tratamento especial do grupo ADMIN com acesso irrestrito e matriz não editável.
+- Preservação dos grants cumulativos entre grupos.
+- Roteiro caixa-preta em `docs/tests/blackbox/sprint-10.md`.
