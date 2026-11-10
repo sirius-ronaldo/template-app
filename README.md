@@ -118,6 +118,29 @@ template-app/
 - `GET /`: página inicial com diagnóstico do banco e demonstração de interface.
 - `GET /status`: fragmento HTML para demonstrar atualização parcial via HTMX.
 
+## Personalização da interface
+
+A identidade visual genérica do template é configurada em `config/ui.php`.
+Esse arquivo permite alterar:
+
+- nome e sigla da aplicação;
+- texto institucional;
+- identificação do ambiente;
+- tema inicial (`dark` ou `light`);
+- logo e imagens opcionais do cabeçalho e rodapé do login.
+
+Os caminhos de imagem são URLs públicas, normalmente sob `public/assets/img`.
+Quando não são informados, a interface usa uma marca textual genérica e não
+depende de ativos externos.
+
+O usuário pode alternar entre os temas claro e escuro. A escolha é persistida
+no navegador pela chave `template-ui-theme` e tem precedência sobre o tema
+inicial configurado pelo projeto.
+
+O shell autenticado possui sidebar no desktop e drawer abaixo de 860 px. O
+drawer pode ser fechado pelo botão, backdrop, tecla Escape ou navegação, e
+mantém o foco de teclado dentro do menu enquanto estiver aberto.
+
 ## Tecnologias
 
 - PHP 8.2

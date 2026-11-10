@@ -10,20 +10,12 @@ declare(strict_types=1);
 $editing = $mode === 'edit';
 $action = $editing ? '/configuracoes/grupos/' . (int) $groupId : '/configuracoes/grupos';
 ?>
-<section class="mx-auto max-w-2xl rounded-3xl bg-white p-8 shadow-sm">
-    <h1 class="text-2xl font-bold"><?= $editing ? 'Editar grupo' : 'Novo grupo' ?></h1>
-    <?php if (isset($errors['global'])) : ?><p class="mt-4 rounded-xl bg-rose-50 px-4 py-3 text-rose-800"><?= $this->e($errors['global']) ?></p><?php endif; ?>
-    <form class="mt-6" method="post" action="<?= $this->e($action) ?>">
-        <input type="hidden" name="_csrf" value="<?= $this->e($this->csrfToken()) ?>">
-        <label class="block text-sm font-medium" for="code">Código</label>
-        <input class="mt-2 w-full rounded-xl border border-slate-300 px-4 py-3" id="code" name="code" value="<?= $this->e($group['code']) ?>" required>
-        <?php if (isset($errors['code'])) : ?><p class="mt-1 text-sm text-rose-700"><?= $this->e($errors['code']) ?></p><?php endif; ?>
-        <label class="mt-4 block text-sm font-medium" for="name">Nome</label>
-        <input class="mt-2 w-full rounded-xl border border-slate-300 px-4 py-3" id="name" name="name" value="<?= $this->e($group['name']) ?>" required>
-        <?php if (isset($errors['name'])) : ?><p class="mt-1 text-sm text-rose-700"><?= $this->e($errors['name']) ?></p><?php endif; ?>
-        <label class="mt-4 block text-sm font-medium" for="description">Descrição</label>
-        <textarea class="mt-2 w-full rounded-xl border border-slate-300 px-4 py-3" id="description" name="description"><?= $this->e($group['description']) ?></textarea>
-        <label class="mt-4 flex items-center gap-2 text-sm"><input name="active" type="checkbox" value="1" <?= (bool) $group['active'] ? 'checked' : '' ?>> Grupo ativo</label>
-        <button class="mt-6 rounded-xl bg-slate-900 px-4 py-3 font-medium text-white" type="submit">Salvar</button>
-    </form>
-</section>
+<header class="ui-page-header"><div><p class="ui-eyebrow">Grupos</p><h1 class="ui-page-title"><?= $editing ? 'Editar grupo' : 'Novo grupo' ?></h1><p class="ui-page-description">Configure a identificação e a situação do grupo.</p></div><a class="ui-button ui-button--secondary" href="/configuracoes/grupos">Voltar</a></header>
+<section class="ui-card ui-card--padded ui-form-surface">
+<?php if (isset($errors['global'])) : ?><div class="ui-flash ui-flash--error" role="alert"><strong>Revise os dados</strong><span><?= $this->e($errors['global']) ?></span></div><?php endif; ?>
+<form class="ui-form-grid" method="post" action="<?= $this->e($action) ?>"><input type="hidden" name="_csrf" value="<?= $this->e($this->csrfToken()) ?>">
+<div class="ui-field"><label class="ui-label" for="code">Código</label><input class="ui-input" id="code" name="code" value="<?= $this->e($group['code']) ?>" required><?php if (isset($errors['code'])) : ?><p class="ui-field-error"><?= $this->e($errors['code']) ?></p><?php endif; ?></div>
+<div class="ui-field"><label class="ui-label" for="name">Nome</label><input class="ui-input" id="name" name="name" value="<?= $this->e($group['name']) ?>" required><?php if (isset($errors['name'])) : ?><p class="ui-field-error"><?= $this->e($errors['name']) ?></p><?php endif; ?></div>
+<div class="ui-field ui-field--full"><label class="ui-label" for="description">Descrição</label><textarea class="ui-textarea" id="description" name="description"><?= $this->e($group['description']) ?></textarea></div>
+<label class="ui-check-label ui-field--full"><input class="ui-checkbox" name="active" type="checkbox" value="1" <?= (bool) $group['active'] ? 'checked' : '' ?>> Grupo ativo</label>
+<div class="ui-actions ui-field--full"><button class="ui-button ui-button--primary" type="submit">Salvar grupo</button><a class="ui-button ui-button--secondary" href="/configuracoes/grupos">Cancelar</a></div></form></section>

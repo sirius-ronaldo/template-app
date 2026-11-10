@@ -216,3 +216,41 @@ Implementações:
 - Limpeza isolada do schema de teste entre casos, sem intervenção SQL manual do desenvolvedor.
 - Revisão da documentação de instalação e configuração das credenciais de teste.
 - Roteiro caixa-preta fim a fim em `docs/tests/blackbox/sprint-12.md`.
+
+## 2026-11-10 — Sprint 13 — Padrão visual reutilizável
+
+Status: concluída tecnicamente; homologação caixa-preta pendente.
+
+Implementações:
+
+- Configuração genérica de branding, imagens opcionais e tema inicial em
+  `config/ui.php`.
+- Contexto visual compartilhado pelos dois renderers existentes, sem alteração
+  dos contratos de negócio.
+- Shell autenticado com sidebar de 300 px, topbar sticky, navegação ativa,
+  grupos expansíveis e logout POST com CSRF.
+- Drawer mobile com backdrop, tecla Escape, retorno e contenção de foco.
+- Temas escuro e claro baseados em tokens semânticos, com preferência persistida
+  em `localStorage`.
+- Layout público e login responsivos com branding configurável e fallback
+  textual independente de ativos externos.
+- Home demonstrativa com métricas, filtros, formulário, tabela, badges, estado
+  vazio e atualização HTMX.
+- Padronização visual das telas administrativas, formulários, tabelas, flashes,
+  paginação, catálogos, grants e manifesto.
+- Responsividade validada em desktop e 390 px, com correção de overflow global e
+  rolagem horizontal restrita às tabelas.
+- Testes automatizados de configuração e infraestrutura visual.
+- Roteiro caixa-preta em `docs/tests/blackbox/sprint-13.md`.
+
+Testes automatizados:
+
+- `make css-build`: aprovado.
+- `make validate`: aprovado com 58 testes e 159 asserções.
+
+Limitações e pendências:
+
+- Homologação caixa-preta por stakeholders pendente.
+- O `npm audit` informa uma vulnerabilidade de severidade alta em dependência de
+  desenvolvimento; não foi aplicado `npm audit fix` para evitar atualização de
+  dependências fora do escopo da sprint.
