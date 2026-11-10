@@ -7,58 +7,9 @@ declare(strict_types=1);
 /** @var string|null $flashError */
 /** @var array<string, mixed>|null $auth */
 /** @var bool $isAdmin */
+/** @var string $currentPath */
+/** @var App\Config\UiConfig|null $ui */
 /** @var App\Support\Csrf $csrf */
-/** @var App\Support\View $this */
-?>
-<!doctype html>
-<html lang="pt-BR">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Template App</title>
-    <link rel="stylesheet" href="/assets/css/app.css">
-    <script src="https://unpkg.com/htmx.org@2.0.4"></script>
-</head>
-<body class="min-h-screen bg-slate-100 text-slate-950">
-    <div class="min-h-screen">
-        <header class="border-b border-slate-200 bg-white">
-            <div class="mx-auto max-w-6xl px-6 py-5">
-                <p class="text-sm font-semibold tracking-[0.3em] text-emerald-700">TEMPLATE</p>
-                <h1 class="text-2xl font-bold">Template App</h1>
-                <p class="mt-1 text-sm text-slate-600">
-                    Base para projetos PHP 8.2 com Docker, PostgreSQL, HTMX, Tailwind CSS e Codex.
-                </p>
-                <?php if (is_array($auth)) : ?>
-                    <a class="mr-3 text-sm font-medium text-emerald-700" href="/minha-senha">Minha senha</a>
-                    <?php if ($isAdmin === true) : ?>
-                        <a
-                            class="mr-3 text-sm font-medium text-emerald-700"
-                            href="/configuracoes/seguranca"
-                        >Segurança</a>
-                    <?php endif; ?>
-                    <form class="mt-4" method="post" action="/logout">
-                        <input type="hidden" name="_csrf" value="<?= $this->e($csrf->token()) ?>">
-                        <button
-                            class="rounded-xl bg-slate-900 px-4 py-2 text-sm font-medium text-white"
-                            type="submit"
-                        >Sair</button>
-                    </form>
-                <?php endif; ?>
-            </div>
-        </header>
-        <main class="mx-auto max-w-6xl px-6 py-8">
-            <?php if (is_string($flashSuccess) && $flashSuccess !== '') : ?>
-                <div class="mb-4 rounded-xl border border-emerald-300 bg-emerald-50 px-4 py-3 text-emerald-800">
-                    <?= $this->escape($flashSuccess) ?>
-                </div>
-            <?php endif; ?>
-            <?php if (is_string($flashError) && $flashError !== '') : ?>
-                <div class="mb-4 rounded-xl border border-rose-300 bg-rose-50 px-4 py-3 text-rose-800">
-                    <?= $this->escape($flashError) ?>
-                </div>
-            <?php endif; ?>
-            <?= $content ?>
-        </main>
-    </div>
-</body>
-</html>
+
+$csrfToken = $csrf->token();
+require dirname(__DIR__, 3) . '/resources/views/layouts/app-shell.php';

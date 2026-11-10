@@ -6,15 +6,18 @@ declare(strict_types=1);
 /** @var App\Support\View $this */
 ob_start();
 ?>
-<section class="mx-auto max-w-xl rounded-3xl bg-white p-8 shadow-sm">
-    <h1 class="text-2xl font-bold">500</h1>
-    <p class="mt-3 text-sm text-slate-600">Erro interno da aplicacao.</p>
+<main class="ui-public-main" id="main-content">
+<section class="ui-error-card" aria-labelledby="error-title">
+    <p class="ui-error-code" aria-hidden="true">500</p>
+    <h1 class="ui-card__title" id="error-title">Erro interno da aplicação</h1>
+    <p class="ui-card__description">Não foi possível concluir a solicitação neste momento.</p>
     <?php if (is_string($message) && $message !== '') : ?>
-        <pre class="mt-4 overflow-auto rounded-2xl bg-slate-900 p-4 text-xs text-slate-100"><?=
+        <pre class="ui-code"><?=
             $this->escape($message)
         ?></pre>
     <?php endif; ?>
 </section>
+</main>
 <?php
 $content = (string) ob_get_clean();
 require dirname(__DIR__) . '/layouts/public.php';

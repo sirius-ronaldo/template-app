@@ -51,6 +51,7 @@ use App\Support\FlashBag;
 use App\Support\PasswordHasher;
 use App\Support\Session;
 use App\Support\SessionManager;
+use App\Support\UiContext;
 use App\Support\View;
 use App\Support\ViewRenderer;
 use App\Validator\UserValidator;
@@ -76,6 +77,10 @@ final class AppFactory
 
         $container->singleton(AppConfig::class, static fn (): AppConfig => $config);
         $container->singleton(
+            UiConfig::class,
+            static fn (): UiConfig => UiConfig::fromFile(dirname(__DIR__, 2) . '/config/ui.php')
+        );
+        $container->singleton(
             LoggerInterface::class,
             static fn (Container $c): FileLogger => new FileLogger($c->get(AppConfig::class)->logPath)
         );
@@ -90,13 +95,22 @@ final class AppFactory
             static fn (Container $c): ViewRenderer => new ViewRenderer(
                 dirname(__DIR__, 2) . '/resources/views',
                 $c->get(FlashBag::class),
-                $c->get(CsrfTokenManager::class)
+                $c->get(CsrfTokenManager::class),
+                $c->get(UiContext::class)
             )
         );
         $container->singleton(SessionManager::class, static fn (Container $c): SessionManager => new SessionManager(
             $c->get(Session::class)
         ));
         $container->singleton(PasswordHasher::class, static fn (): PasswordHasher => new PasswordHasher());
+        $container->singleton(
+            UiContext::class,
+            static fn (Container $c): UiContext => new UiContext(
+                $c->get(UiConfig::class),
+                $c->get(SessionManager::class),
+                $c->get(AdminChecker::class)
+            )
+        );
         $container->singleton(
             CsrfTokenManager::class,
             static fn (Container $c): CsrfTokenManager => new CsrfTokenManager($c->get(Session::class))
@@ -111,7 +125,8 @@ final class AppFactory
                 dirname(__DIR__) . '/View',
                 $c->get(Session::class),
                 $c->get(Csrf::class),
-                $c->get(AdminChecker::class)
+                $c->get(AdminChecker::class),
+                $c->get(UiContext::class)
             )
         );
         $container->singleton(PDO::class, static function () use ($config): PDO {

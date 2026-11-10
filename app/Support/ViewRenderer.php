@@ -9,7 +9,8 @@ final class ViewRenderer
     public function __construct(
         private readonly string $basePath,
         private readonly FlashBag $flash,
-        private readonly ?CsrfTokenManager $csrf = null
+        private readonly ?CsrfTokenManager $csrf = null,
+        private readonly ?UiContext $uiContext = null,
     ) {
     }
 
@@ -24,6 +25,7 @@ final class ViewRenderer
         $layoutData['content'] = $content;
         $layoutData['flashSuccess'] = $this->flash->pull('success');
         $layoutData['flashError'] = $this->flash->pull('error');
+        $layoutData = array_merge($layoutData, $this->uiContext?->data() ?? []);
         return $this->includeTemplate($layout, $layoutData);
     }
 

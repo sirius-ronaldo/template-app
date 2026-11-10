@@ -12,7 +12,9 @@ final class HomePageTest extends HttpTestCase
 
         self::assertSame(200, $response['status']);
         self::assertStringContainsString('Template App', $response['body']);
-        self::assertStringContainsString('Diagnostico do banco', $response['body']);
+        self::assertStringContainsString('Diagnóstico do banco', $response['body']);
+        self::assertStringContainsString('data-default-theme="dark"', $response['body']);
+        self::assertStringContainsString('class="ui-sidebar"', $response['body']);
     }
 
     public function testStatusRouteReturnsFragment(): void

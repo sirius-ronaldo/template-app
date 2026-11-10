@@ -38,6 +38,9 @@ final class UiInfrastructureTest extends TestCase
         self::assertStringContainsString('Template App', $html);
         self::assertStringContainsString('Operacao concluida.', $html);
         self::assertStringContainsString('Usuarios', $html);
+        self::assertStringContainsString('data-theme-toggle', $html);
+        self::assertStringContainsString('data-sidebar-open', $html);
+        self::assertStringContainsString('role="alert"', $html);
         self::assertNull($flash->pull('success'));
     }
 
@@ -68,5 +71,7 @@ final class UiInfrastructureTest extends TestCase
         $html = $view->render('layouts/app', ['content' => 'conteudo']);
 
         self::assertStringContainsString('/configuracoes/seguranca', $html);
+        self::assertStringContainsString('aria-controls="admin-navigation"', $html);
+        self::assertStringContainsString('method="post" action="/logout"', $html);
     }
 }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Support;
 
+use App\Config\UiConfig;
 use App\Service\AdminChecker;
 
 final class View
@@ -12,7 +13,8 @@ final class View
         private readonly string $basePath,
         private readonly Session $session,
         private readonly ?Csrf $defaultCsrf = null,
-        private readonly ?AdminChecker $admins = null
+        private readonly ?AdminChecker $admins = null,
+        private readonly ?UiContext $uiContext = null,
     ) {
     }
 
@@ -28,10 +30,15 @@ final class View
         }
 
         $csrf = $data['csrf'] ?? $this->defaultCsrf;
-        $auth = $this->session->get('auth');
-        $isAdmin = is_array($auth)
+        $context = $this->uiContext?->data() ?? [];
+        $auth = $context['auth'] ?? $this->session->get('auth');
+        $isAdmin = $context['isAdmin'] ?? (
+            is_array($auth)
             && isset($auth['user_id'])
-            && $this->admins?->isAdmin((int) $auth['user_id']) === true;
+            && $this->admins?->isAdmin((int) $auth['user_id']) === true
+        );
+        $ui = $context['ui'] ?? UiConfig::defaults();
+        $currentPath = $context['currentPath'] ?? '/';
         $flashSuccess = $this->session->consumeFlash('success');
         $flashError = $this->session->consumeFlash('error');
 

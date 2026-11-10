@@ -5,43 +5,68 @@ declare(strict_types=1);
 /** @var App\Support\View $this */
 /** @var App\Support\Csrf $csrf */
 /** @var string|null $error */
+
+ob_start();
 ?>
-<main class="flex min-h-screen items-center justify-center px-6 py-12">
-    <form method="post" action="/minha-senha" class="w-full max-w-md rounded-3xl bg-white p-8 shadow-sm">
-        <h1 class="text-2xl font-bold">Alterar minha senha</h1>
-        <?php if (isset($error) && $error !== '') : ?>
-            <p class="mt-4 rounded-xl bg-rose-50 px-4 py-3 text-sm text-rose-800"><?= $this->e($error) ?></p>
-        <?php endif; ?>
+<header class="ui-page-header">
+    <div>
+        <p class="ui-eyebrow">Conta</p>
+        <h1 class="ui-page-title">Alterar minha senha</h1>
+        <p class="ui-page-description">Use uma senha exclusiva com pelo menos oito caracteres.</p>
+    </div>
+</header>
+<section class="ui-card ui-card--padded ui-form-surface--narrow" aria-labelledby="password-form-title">
+    <h2 class="ui-card__title" id="password-form-title">Nova credencial</h2>
+    <?php if (isset($error) && $error !== '') : ?>
+        <div class="ui-flash ui-flash--error ui-section-gap" role="alert">
+            <strong>Revise os dados</strong><span><?= $this->e($error) ?></span>
+        </div>
+    <?php endif; ?>
+    <form method="post" action="/minha-senha" class="ui-stack ui-section-gap">
         <input type="hidden" name="_csrf" value="<?= $this->e($csrf->token()) ?>">
-        <label class="mt-6 block text-sm font-medium" for="current_password">Senha atual</label>
-        <input
-            class="mt-2 w-full rounded-xl border border-slate-300 px-4 py-3"
-            id="current_password"
-            name="current_password"
-            type="password"
-            required
-        >
-        <label class="mt-4 block text-sm font-medium" for="new_password">Nova senha</label>
-        <input
-            class="mt-2 w-full rounded-xl border border-slate-300 px-4 py-3"
-            id="new_password"
-            name="new_password"
-            type="password"
-            minlength="8"
-            required
-        >
-        <label class="mt-4 block text-sm font-medium" for="new_password_confirmation">Confirme a nova senha</label>
-        <input
-            class="mt-2 w-full rounded-xl border border-slate-300 px-4 py-3"
-            id="new_password_confirmation"
-            name="new_password_confirmation"
-            type="password"
-            minlength="8"
-            required
-        >
-        <button
-            class="mt-6 w-full rounded-xl bg-slate-900 px-4 py-3 font-medium text-white"
-            type="submit"
-        >Salvar nova senha</button>
+        <div class="ui-field">
+            <label class="ui-label" for="current_password">Senha atual</label>
+            <input
+                class="ui-input"
+                id="current_password"
+                name="current_password"
+                type="password"
+                autocomplete="current-password"
+                required
+            >
+        </div>
+        <div class="ui-form-grid">
+            <div class="ui-field">
+                <label class="ui-label" for="new_password">Nova senha</label>
+                <input
+                    class="ui-input"
+                    id="new_password"
+                    name="new_password"
+                    type="password"
+                    autocomplete="new-password"
+                    minlength="8"
+                    required
+                >
+            </div>
+            <div class="ui-field">
+                <label class="ui-label" for="new_password_confirmation">Confirme a nova senha</label>
+                <input
+                    class="ui-input"
+                    id="new_password_confirmation"
+                    name="new_password_confirmation"
+                    type="password"
+                    autocomplete="new-password"
+                    minlength="8"
+                    required
+                >
+            </div>
+        </div>
+        <div class="ui-actions">
+            <button class="ui-button ui-button--primary" type="submit">Salvar nova senha</button>
+            <a class="ui-button ui-button--secondary" href="/Home">Cancelar</a>
+        </div>
     </form>
-</main>
+</section>
+<?php
+$content = (string) ob_get_clean();
+require dirname(__DIR__) . '/layouts/app.php';
